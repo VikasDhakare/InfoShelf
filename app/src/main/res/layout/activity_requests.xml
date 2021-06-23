@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Requests.RequestsActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/top"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        >
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/my_profile_tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:tabIndicatorColor="#E91E63"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            app:tabIconTint="@color/white"
+            android:background="@drawable/round"
+            app:tabIndicatorAnimationMode="elastic"
+            android:elevation="20dp"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
+            app:tabIndicatorFullWidth="false"
+            />
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/my_profile_pager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_below="@id/my_profile_tabs"
+            ></androidx.viewpager.widget.ViewPager>
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

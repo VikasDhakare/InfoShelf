@@ -1,0 +1,708 @@
+<html>
+<head>
+<title>AddTimeline.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6897bb;}
+.s3 { color: #808080;}
+.s4 { color: #6a8759;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+AddTimeline.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.card.infoshelf.bottomfragment</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.app.ProgressDialog</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.Intent</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.SharedPreferences</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.database.Cursor</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.net.Uri</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.os.Build</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.os.Bundle</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">androidx.annotation.NonNull</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.annotation.Nullable</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.fragment.app.Fragment</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.recyclerview.widget.LinearLayoutManager</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.recyclerview.widget.RecyclerView</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.preference.PreferenceManager</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.provider.OpenableColumns</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.text.Editable</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.text.TextWatcher</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.LayoutInflater</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.View</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.ViewGroup</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.ArrayAdapter</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.AutoCompleteTextView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.EditText</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.ImageView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.LinearLayout</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.Spinner</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.TextView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.Toast</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">com.card.infoshelf.R</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.tasks.OnCompleteListener</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.tasks.OnFailureListener</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.tasks.OnSuccessListener</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.tasks.Task</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.android.material.bottomsheet.BottomSheetDialog</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.android.material.bottomsheet.BottomSheetDialogFragment</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.android.material.chip.ChipGroup</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.auth.FirebaseAuth</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.database.DataSnapshot</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.database.DatabaseError</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.database.DatabaseReference</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.database.FirebaseDatabase</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.database.ValueEventListener</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.storage.FirebaseStorage</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.storage.StorageReference</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.storage.UploadTask</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.gson.Gson</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.gson.reflect.TypeToken</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.squareup.picasso.Picasso</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">java.io.File</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.lang.reflect.Type</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.ArrayList</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.HashMap</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.HashSet</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.List</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.Set</span><span class="s0">;</span>
+
+<span class="s0">import static </span><span class="s1">android.app.Activity.RESULT_OK</span><span class="s0">;</span>
+<span class="s0">import static </span><span class="s1">android.content.Context.MODE_PRIVATE</span><span class="s0">;</span>
+
+<span class="s0">public class </span><span class="s1">AddTimeline </span><span class="s0">extends </span><span class="s1">Fragment {</span>
+    <span class="s1">Spinner RelateSpin</span><span class="s0">,</span><span class="s1">CompanySpin</span><span class="s0">;</span>
+    <span class="s1">LinearLayout Article_snap</span><span class="s0">,</span><span class="s1">bottom_Text_tags</span><span class="s0">,</span><span class="s1">personTaglayout</span><span class="s0">;</span>
+    <span class="s1">ImageView Profile_avtar</span><span class="s0">,</span><span class="s1">doc_image</span><span class="s0">,</span><span class="s1">ImageBtn</span><span class="s0">,</span><span class="s1">VideoBtn</span><span class="s0">,</span><span class="s1">FileBtn</span><span class="s0">,</span><span class="s1">TagBtn</span><span class="s0">,</span><span class="s1">Deletebtn</span><span class="s0">;</span>
+    <span class="s1">TextView Profilename</span><span class="s0">,</span><span class="s1">Profileprofession</span><span class="s0">,</span><span class="s1">Error_text</span><span class="s0">,</span><span class="s1">hashBtn</span><span class="s0">,</span><span class="s1">PostBtn</span><span class="s0">;</span>
+    <span class="s0">static </span><span class="s1">TextView ShowTags1</span><span class="s0">,</span><span class="s1">ShowTags2</span><span class="s0">,</span><span class="s1">ShowTags3</span><span class="s0">;</span>
+    <span class="s1">EditText Articleheading</span><span class="s0">,</span><span class="s1">Articlewritebox</span><span class="s0">;</span>
+    <span class="s1">String RelateSpinValue</span><span class="s0">,</span><span class="s1">CompanySpinValue</span><span class="s0">,</span><span class="s1">article_headingValue</span><span class="s0">,</span><span class="s1">article_box_Value</span><span class="s0">;</span>
+    <span class="s1">TextView docname</span><span class="s0">;</span>
+    <span class="s1">TextView docsize</span><span class="s0">;</span>
+    <span class="s0">static </span><span class="s1">TextView showTag</span><span class="s0">;</span>
+    <span class="s1">String title </span><span class="s0">,</span><span class="s1">extension</span><span class="s0">;</span>
+    <span class="s1">Boolean checkForUpload = </span><span class="s0">false;</span>
+    <span class="s1">Boolean validation = </span><span class="s0">false;</span>
+    <span class="s0">boolean </span><span class="s1">isAllFieldChecked = </span><span class="s0">false;</span>
+    <span class="s1">DatabaseReference Ref </span><span class="s0">;</span>
+    <span class="s1">StorageReference storageReference</span><span class="s0">;</span>
+    <span class="s1">StorageReference reference</span><span class="s0">;</span>
+    <span class="s1">ProgressDialog pd</span><span class="s0">;</span>
+    <span class="s1">BottomSheetDialog bottomSheetDialog</span><span class="s0">;</span>
+    <span class="s1">AutoCompleteTextView autoCompleteTextView</span><span class="s0">;</span>
+    <span class="s0">long </span><span class="s1">k</span><span class="s0">;</span>
+    <span class="s1">List&lt;TagModel&gt; contacts = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;()</span><span class="s0">;</span>
+    <span class="s0">static </span><span class="s1">List&lt;String&gt; PersonTagsClone</span><span class="s0">;</span>
+
+    <span class="s1">Uri uri</span><span class="s0">;</span>
+    <span class="s1">View view</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">FirebaseAuth mAuth</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">String CurrentUserId</span><span class="s0">;</span>
+    <span class="s0">private static int </span><span class="s1">RESULT_LOAD_IMAGE = </span><span class="s2">1</span><span class="s0">;</span>
+    <span class="s0">private static int </span><span class="s1">RESULT_LOAD_video = </span><span class="s2">2</span><span class="s0">;</span>
+    <span class="s0">private static int </span><span class="s1">RESULT_LOAD_File = </span><span class="s2">3</span><span class="s0">;</span>
+
+    <span class="s3">//================</span>
+    <span class="s0">private </span><span class="s1">EditText userinput</span><span class="s0">;</span>
+
+    <span class="s0">private </span><span class="s1">TextView done</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">List&lt;String&gt; PersonTags</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">RecyclerView recyclerView</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">TagAdapter tagAdapter</span><span class="s0">;</span>
+
+    <span class="s3">//=========</span>
+
+
+    <span class="s1">@Override</span>
+    <span class="s0">public </span><span class="s1">View onCreateView(LayoutInflater inflater</span><span class="s0">, </span><span class="s1">ViewGroup container</span><span class="s0">,</span>
+                             <span class="s1">Bundle savedInstanceState) {</span>
+
+
+        <span class="s1">view = inflater.inflate(R.layout.fragment_add_timeline</span><span class="s0">, </span><span class="s1">container</span><span class="s0">, false</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s3">//casting all variables</span>
+        <span class="s1">ShowTags1 = view.findViewById(R.id.ShoeTags1)</span><span class="s0">;</span>
+        <span class="s1">ShowTags2= view.findViewById(R.id.ShoeTags2)</span><span class="s0">;</span>
+        <span class="s1">ShowTags3= view.findViewById(R.id.ShoeTags3)</span><span class="s0">;</span>
+        <span class="s3">//bottom_Text_tags = findViewById(R.id.TextBottomRecycler);</span>
+        <span class="s1">Error_text = view.findViewById(R.id.errorText)</span><span class="s0">;</span>
+        <span class="s1">Profile_avtar = view.findViewById(R.id.AvatarImg)</span><span class="s0">;</span>
+        <span class="s1">Article_snap = view.findViewById(R.id.Gallery)</span><span class="s0">;</span>
+        <span class="s1">Profilename = view.findViewById(R.id.PersonName)</span><span class="s0">;</span>
+<span class="s3">//        Profileprofession = view.findViewById(R.id.PersonProf);</span>
+        <span class="s1">ImageBtn = view.findViewById(R.id.image_btn)</span><span class="s0">;</span>
+        <span class="s1">VideoBtn = view.findViewById(R.id.video_btn)</span><span class="s0">;</span>
+        <span class="s1">FileBtn = view.findViewById(R.id.file_btn)</span><span class="s0">;</span>
+        <span class="s1">TagBtn = view.findViewById(R.id.Tag_btn)</span><span class="s0">;</span>
+        <span class="s1">PostBtn = view.findViewById(R.id.Post_btn)</span><span class="s0">;</span>
+        <span class="s1">docname = view.findViewById(R.id.docname)</span><span class="s0">;</span>
+        <span class="s1">RelateSpin = view.findViewById(R.id.relate_spinner)</span><span class="s0">;</span>
+        <span class="s1">CompanySpin = view.findViewById(R.id.company_spinner)</span><span class="s0">;</span>
+        <span class="s1">Articlewritebox = view.findViewById(R.id.Article_writebox)</span><span class="s0">;</span>
+
+        <span class="s3">//-------------------------firebase references-----------------</span>
+
+        <span class="s1">Ref = FirebaseDatabase.getInstance().getReference()</span><span class="s0">;</span>
+        <span class="s1">storageReference = FirebaseStorage.getInstance().getReference()</span><span class="s0">;</span>
+
+        <span class="s3">//-------------------------BottomSheet dialog--------------------------------//</span>
+        <span class="s1">bottomSheetDialog = </span><span class="s0">new </span><span class="s1">BottomSheetDialog(getActivity()</span><span class="s0">,</span><span class="s1">R.style.BottomSheetStyle)</span><span class="s0">;</span>
+        <span class="s1">View root = LayoutInflater.from(getActivity()).inflate(R.layout.activity_tag_person</span><span class="s0">, </span><span class="s1">view.findViewById(R.id.personTagLayout))</span><span class="s0">;</span>
+        <span class="s1">bottomSheetDialog.setContentView(root)</span><span class="s0">;</span>
+
+        <span class="s1">mAuth = FirebaseAuth.getInstance()</span><span class="s0">;</span>
+        <span class="s1">CurrentUserId = mAuth.getCurrentUser().getUid()</span><span class="s0">;</span>
+<span class="s3">//setting profile Name and image on top bar==============================</span>
+        <span class="s1">Ref= FirebaseDatabase.getInstance().getReference(</span><span class="s4">&quot;Users&quot;</span><span class="s1">).child(CurrentUserId)</span><span class="s0">;</span>
+        <span class="s1">Ref.addValueEventListener(</span><span class="s0">new </span><span class="s1">ValueEventListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onDataChange(DataSnapshot dataSnapshot) {</span>
+                <span class="s3">// This method is called once with the initial value and again</span>
+                <span class="s3">// whenever data at this location is updated.</span>
+                <span class="s1">String username = dataSnapshot.child(</span><span class="s4">&quot;userName&quot;</span><span class="s1">).getValue().toString()</span><span class="s0">;</span>
+                <span class="s1">String userImage = dataSnapshot.child(</span><span class="s4">&quot;profile_image&quot;</span><span class="s1">).getValue().toString()</span><span class="s0">;</span>
+                <span class="s1">Profilename.setText(username)</span><span class="s0">;</span>
+                <span class="s1">Picasso.get().load(userImage).into(Profile_avtar)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onCancelled(DatabaseError error) {</span>
+                <span class="s3">// Failed to read value</span>
+
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+
+        <span class="s3">///------------------------Two spinners code starts-------------------------///</span>
+
+
+        <span class="s1">String[] ArrayInterest = {</span><span class="s4">&quot;None&quot;</span><span class="s0">,</span><span class="s4">&quot;Effective communication&quot;</span><span class="s0">, </span><span class="s4">&quot;Teamwork&quot;</span><span class="s0">, </span><span class="s4">&quot;Responsibility&quot;</span><span class="s0">, </span><span class="s4">&quot;Creativity&quot;</span><span class="s0">, </span><span class="s4">&quot;Problem-solving&quot;</span><span class="s0">, </span><span class="s4">&quot;Leadership&quot;</span><span class="s0">, </span><span class="s4">&quot;Extroversion&quot;</span><span class="s0">, </span><span class="s4">&quot;People skills&quot;</span><span class="s0">, </span><span class="s4">&quot;Openness&quot;</span><span class="s0">, </span><span class="s4">&quot;Adaptability&quot;</span><span class="s0">, </span><span class="s4">&quot;Data analysis&quot;</span><span class="s0">, </span><span class="s4">&quot;Web analytics&quot;</span><span class="s0">, </span><span class="s4">&quot;Wordpress&quot;</span><span class="s0">, </span><span class="s4">&quot;Email marketing&quot;</span><span class="s0">, </span><span class="s4">&quot;Web scraping&quot;</span><span class="s0">, </span><span class="s4">&quot;CRO and A/B Testing&quot;</span><span class="s0">, </span><span class="s4">&quot;Data visualization &amp; pattern-finding through critical thinking&quot;</span><span class="s0">, </span><span class="s4">&quot;Search Engine and Keyword Optimization&quot;</span><span class="s0">, </span><span class="s4">&quot;Project/campaign management&quot;</span><span class="s0">, </span><span class="s4">&quot;Social media and mobile marketing&quot;</span><span class="s0">, </span><span class="s4">&quot;Paid social media advertisements&quot;</span><span class="s0">, </span><span class="s4">&quot;B2B Marketing&quot;</span><span class="s0">, </span><span class="s4">&quot;The 4 P-s of Marketing&quot;</span><span class="s0">, </span><span class="s4">&quot;Consumer Behavior Drivers&quot;</span><span class="s0">, </span><span class="s4">&quot;Brand management&quot;</span><span class="s0">, </span><span class="s4">&quot;Creativity&quot;</span><span class="s0">, </span><span class="s4">&quot;Copywriting&quot;</span><span class="s0">, </span><span class="s4">&quot;Storytelling&quot;</span><span class="s0">, </span><span class="s4">&quot;Sales&quot;</span><span class="s0">, </span><span class="s4">&quot;CMS Tools&quot;</span><span class="s0">, </span><span class="s4">&quot;Six Sigma techniques&quot;</span><span class="s0">, </span><span class="s4">&quot;The McKinsey 7s Framework&quot;</span><span class="s0">, </span><span class="s4">&quot;Porter’s Five Forces&quot;</span><span class="s0">, </span><span class="s4">&quot;PESTEL&quot;</span><span class="s0">, </span><span class="s4">&quot;Emotional Intelligence&quot;</span><span class="s0">, </span><span class="s4">&quot;Dealing with work-related stress&quot;</span><span class="s0">, </span><span class="s4">&quot;Motivation&quot;</span><span class="s0">, </span><span class="s4">&quot;Task delegation&quot;</span><span class="s0">, </span><span class="s4">&quot;Technological savviness&quot;</span><span class="s0">, </span><span class="s4">&quot;People management&quot;</span><span class="s0">, </span><span class="s4">&quot;Business Development&quot;</span><span class="s0">, </span><span class="s4">&quot;Strategic Management&quot;</span><span class="s0">, </span><span class="s4">&quot;Negotiation&quot;</span><span class="s0">, </span><span class="s4">&quot;Planning&quot;</span><span class="s0">, </span><span class="s4">&quot;Proposal writing&quot;</span><span class="s0">, </span><span class="s4">&quot;Problem-solving&quot;</span><span class="s0">, </span><span class="s4">&quot;Innovation&quot;</span><span class="s0">, </span><span class="s4">&quot;Charisma&quot;</span><span class="s0">, </span><span class="s4">&quot;Algorithms&quot;</span><span class="s0">, </span><span class="s4">&quot;Analytical Skills&quot;</span><span class="s0">, </span><span class="s4">&quot;Big Data&quot;</span><span class="s0">, </span><span class="s4">&quot;Calculating&quot;</span><span class="s0">, </span><span class="s4">&quot;Compiling Statistics&quot;</span><span class="s0">, </span><span class="s4">&quot;Data Analytics&quot;</span><span class="s0">, </span><span class="s4">&quot;Data Mining&quot;</span><span class="s0">, </span><span class="s4">&quot;Database Design&quot;</span><span class="s0">, </span><span class="s4">&quot;Database Management&quot;</span><span class="s0">, </span><span class="s4">&quot;Documentation&quot;</span><span class="s0">, </span><span class="s4">&quot;Modeling&quot;</span><span class="s0">, </span><span class="s4">&quot;Modification&quot;</span><span class="s0">, </span><span class="s4">&quot;Needs Analysis&quot;</span><span class="s0">, </span><span class="s4">&quot;Quantitative Research&quot;</span><span class="s0">, </span><span class="s4">&quot;Quantitative Reports&quot;</span><span class="s0">, </span><span class="s4">&quot;Statistical Analysis&quot;</span><span class="s0">, </span><span class="s4">&quot;HTML&quot;</span><span class="s0">, </span><span class="s4">&quot;Implementation&quot;</span><span class="s0">, </span><span class="s4">&quot;Information Technology&quot;</span><span class="s0">, </span><span class="s4">&quot;ICT (Information and Communications Technology)&quot;</span><span class="s0">, </span><span class="s4">&quot;Infrastructure&quot;</span><span class="s0">, </span><span class="s4">&quot;Languages&quot;</span><span class="s0">, </span><span class="s4">&quot;Maintenance&quot;</span><span class="s0">, </span><span class="s4">&quot;Network Architecture&quot;</span><span class="s0">, </span><span class="s4">&quot;Network Security&quot;</span><span class="s0">, </span><span class="s4">&quot;Networking&quot;</span><span class="s0">, </span><span class="s4">&quot;New Technologies&quot;</span><span class="s0">, </span><span class="s4">&quot;Operating Systems&quot;</span><span class="s0">, </span><span class="s4">&quot;Programming&quot;</span><span class="s0">, </span><span class="s4">&quot;Restoration&quot;</span><span class="s0">, </span><span class="s4">&quot;Security&quot;</span><span class="s0">, </span><span class="s4">&quot;Servers&quot;</span><span class="s0">, </span><span class="s4">&quot;Software&quot;</span><span class="s0">, </span><span class="s4">&quot;Solution Delivery&quot;</span><span class="s0">, </span><span class="s4">&quot;Storage&quot;</span><span class="s0">, </span><span class="s4">&quot;Structures&quot;</span><span class="s0">, </span><span class="s4">&quot;Systems Analysis&quot;</span><span class="s0">, </span><span class="s4">&quot;Technical Support&quot;</span><span class="s0">, </span><span class="s4">&quot;Technology&quot;</span><span class="s0">, </span><span class="s4">&quot;Testing&quot;</span><span class="s0">, </span><span class="s4">&quot;Tools&quot;</span><span class="s0">, </span><span class="s4">&quot;Training&quot;</span><span class="s0">, </span><span class="s4">&quot;Troubleshooting&quot;</span><span class="s0">, </span><span class="s4">&quot;Usability&quot;</span><span class="s0">, </span><span class="s4">&quot;Benchmarking&quot;</span><span class="s0">, </span><span class="s4">&quot;Budget Planning&quot;</span><span class="s0">, </span><span class="s4">&quot;Engineering&quot;</span><span class="s0">, </span><span class="s4">&quot;Fabrication&quot;</span><span class="s0">, </span><span class="s4">&quot;Following Specifications&quot;</span><span class="s0">, </span><span class="s4">&quot;Operations&quot;</span><span class="s0">, </span><span class="s4">&quot;Performance Review&quot;</span><span class="s0">, </span><span class="s4">&quot;Project Planning&quot;</span><span class="s0">, </span><span class="s4">&quot;Quality Assurance&quot;</span><span class="s0">, </span><span class="s4">&quot;Quality Control&quot;</span><span class="s0">, </span><span class="s4">&quot;Scheduling&quot;</span><span class="s0">, </span><span class="s4">&quot;Task Delegation&quot;</span><span class="s0">, </span><span class="s4">&quot;Task Management&quot;</span><span class="s0">, </span><span class="s4">&quot;Content Management Systems (CMS)&quot;</span><span class="s0">, </span><span class="s4">&quot;Blogging&quot;</span><span class="s0">, </span><span class="s4">&quot;Digital Photography&quot;</span><span class="s0">, </span><span class="s4">&quot;Digital Media&quot;</span><span class="s0">, </span><span class="s4">&quot;Networking&quot;</span><span class="s0">, </span><span class="s4">&quot;Search Engine Optimization (SEO)&quot;</span><span class="s0">, </span><span class="s4">&quot;Social Media Platforms (Twitter, Facebook, Instagram, LinkedIn, TikTok, Medium, etc.)&quot;</span><span class="s0">, </span><span class="s4">&quot;Web Analytics&quot;</span><span class="s0">, </span><span class="s4">&quot;Automated Marketing Software&quot;</span><span class="s0">, </span><span class="s4">&quot;Client Relations&quot;</span><span class="s0">, </span><span class="s4">&quot;Email&quot;</span><span class="s0">, </span><span class="s4">&quot;Requirements Gathering&quot;</span><span class="s0">, </span><span class="s4">&quot;Research&quot;</span><span class="s0">, </span><span class="s4">&quot;Subject Matter Experts (SMEs)&quot;</span><span class="s0">, </span><span class="s4">&quot;Technical Documentation&quot;</span><span class="s0">, </span><span class="s4">&quot;Information Security&quot;</span><span class="s0">, </span><span class="s4">&quot;Microsoft Office Certifications&quot;</span><span class="s0">, </span><span class="s4">&quot;Video Creation&quot;</span><span class="s0">, </span><span class="s4">&quot;Customer Relationship Management (CRM)&quot;</span><span class="s0">, </span><span class="s4">&quot;Productivity Software&quot;</span><span class="s0">, </span><span class="s4">&quot;Cloud/SaaS Services&quot;</span><span class="s0">, </span><span class="s4">&quot;Database Management&quot;</span><span class="s0">, </span><span class="s4">&quot;Telecommunications&quot;</span><span class="s0">, </span><span class="s4">&quot;Human Resources Software&quot;</span><span class="s0">, </span><span class="s4">&quot;Accounting Software&quot;</span><span class="s0">, </span><span class="s4">&quot;Enterprise Resource Planning (ERP) Software&quot;</span><span class="s0">, </span><span class="s4">&quot;Database Software&quot;</span><span class="s0">, </span><span class="s4">&quot;Query Software&quot;</span><span class="s0">, </span><span class="s4">&quot;Blueprint Design&quot;</span><span class="s0">, </span><span class="s4">&quot;Medical Billing&quot;</span><span class="s0">, </span><span class="s4">&quot;Medical Coding&quot;</span><span class="s0">, </span><span class="s4">&quot;Sonography&quot;</span><span class="s0">, </span><span class="s4">&quot;Structural Analysis&quot;</span><span class="s0">, </span><span class="s4">&quot;Artificial Intelligence (AI)&quot;</span><span class="s0">, </span><span class="s4">&quot;Mechanical Maintenance&quot;</span><span class="s0">, </span><span class="s4">&quot;Manufacturing&quot;</span><span class="s0">, </span><span class="s4">&quot;Inventory Management&quot;</span><span class="s0">, </span><span class="s4">&quot;Numeracy&quot;</span><span class="s0">, </span><span class="s4">&quot;Information Management&quot;</span><span class="s0">, </span><span class="s4">&quot;Hardware Verification Tools and Techniques&quot;</span><span class="s0">, </span><span class="s4">&quot;PHP&quot;</span><span class="s0">, </span><span class="s4">&quot;TypeScript&quot;</span><span class="s0">, </span><span class="s4">&quot;Scala&quot;</span><span class="s0">, </span><span class="s4">&quot;Shell&quot;</span><span class="s0">, </span><span class="s4">&quot;PowerShell&quot;</span><span class="s0">, </span><span class="s4">&quot;Perl&quot;</span><span class="s0">, </span><span class="s4">&quot;Haskell&quot;</span><span class="s0">, </span><span class="s4">&quot;Kotlin&quot;</span><span class="s0">, </span><span class="s4">&quot;Visual Basic .NET&quot;</span><span class="s0">, </span><span class="s4">&quot;SQL&quot;</span><span class="s0">, </span><span class="s4">&quot;Delphi&quot;</span><span class="s0">, </span><span class="s4">&quot;MATLAB&quot;</span><span class="s0">, </span><span class="s4">&quot;Groovy&quot;</span><span class="s0">, </span><span class="s4">&quot;Lua&quot;</span><span class="s0">, </span><span class="s4">&quot;Rust&quot;</span><span class="s0">, </span><span class="s4">&quot;Ruby&quot;</span><span class="s0">, </span><span class="s4">&quot;HTML and CSS&quot;</span><span class="s0">, </span><span class="s4">&quot;Python&quot;</span><span class="s0">, </span><span class="s4">&quot;Java&quot;</span><span class="s0">, </span><span class="s4">&quot;JavaScript&quot;</span><span class="s0">, </span><span class="s4">&quot;Swift&quot;</span><span class="s0">, </span><span class="s4">&quot;C++&quot;</span><span class="s0">, </span><span class="s4">&quot;C#&quot;</span><span class="s0">, </span><span class="s4">&quot;R&quot;</span><span class="s0">, </span><span class="s4">&quot;Golang (Go)&quot;</span><span class="s0">, </span><span class="s4">&quot;Soccer&quot;</span><span class="s0">, </span><span class="s4">&quot;Football&quot;</span><span class="s0">, </span><span class="s4">&quot;Cycling&quot;</span><span class="s0">, </span><span class="s4">&quot;Running&quot;</span><span class="s0">, </span><span class="s4">&quot;Basketball&quot;</span><span class="s0">, </span><span class="s4">&quot;Swimming&quot;</span><span class="s0">, </span><span class="s4">&quot;Tennis&quot;</span><span class="s0">, </span><span class="s4">&quot;Baseball&quot;</span><span class="s0">, </span><span class="s4">&quot;Yoga&quot;</span><span class="s0">, </span><span class="s4">&quot;Hiking&quot;</span><span class="s0">, </span><span class="s4">&quot;Camping&quot;</span><span class="s0">, </span><span class="s4">&quot;Fishing&quot;</span><span class="s0">, </span><span class="s4">&quot;Trekking&quot;</span><span class="s0">, </span><span class="s4">&quot;Mountain climbing&quot;</span><span class="s0">, </span><span class="s4">&quot;Gardening&quot;</span><span class="s0">, </span><span class="s4">&quot;Drawing&quot;</span><span class="s0">, </span><span class="s4">&quot;Painting&quot;</span><span class="s0">, </span><span class="s4">&quot;Watercoloring&quot;</span><span class="s0">, </span><span class="s4">&quot;Sculpture&quot;</span><span class="s0">, </span><span class="s4">&quot;Woodworking&quot;</span><span class="s0">, </span><span class="s4">&quot;Dance&quot;</span><span class="s0">, </span><span class="s4">&quot;graphics designing&quot;</span><span class="s0">, </span><span class="s4">&quot;Front-End development&quot;</span><span class="s0">, </span><span class="s4">&quot;Back-End development&quot;</span><span class="s0">, </span><span class="s4">&quot;Content Writting&quot;</span><span class="s0">, </span><span class="s4">&quot;essay writting&quot;</span><span class="s0">, </span><span class="s4">&quot;Event organising&quot;</span><span class="s0">, </span><span class="s4">&quot;Hackathon&quot;</span><span class="s0">, </span><span class="s4">&quot;Bookkeeping&quot;</span><span class="s0">, </span><span class="s4">&quot;Graphic design&quot;</span><span class="s0">, </span><span class="s4">&quot;Data analysis&quot;</span><span class="s0">, </span><span class="s4">&quot;Microsoft Excel&quot;</span><span class="s0">, </span><span class="s4">&quot;Public speaking&quot;</span><span class="s0">, </span><span class="s4">&quot;Budgeting&quot;</span><span class="s0">, </span><span class="s4">&quot;Teaching&quot;</span><span class="s0">, </span><span class="s4">&quot;Research&quot;</span><span class="s0">, </span><span class="s4">&quot;Microsoft Word&quot;</span><span class="s0">, </span><span class="s4">&quot;Scheduling&quot;</span><span class="s0">, </span><span class="s4">&quot;Sales&quot;</span><span class="s0">, </span><span class="s4">&quot;Project management&quot;</span><span class="s0">, </span><span class="s4">&quot;Office management&quot;</span><span class="s0">, </span><span class="s4">&quot;Fundraising&quot;</span><span class="s0">, </span><span class="s4">&quot;Writing&quot;</span><span class="s0">, </span><span class="s4">&quot;Editing&quot;</span><span class="s0">, </span><span class="s4">&quot;Event promotion&quot;</span><span class="s0">, </span><span class="s4">&quot;Event planning&quot;</span><span class="s0">, </span><span class="s4">&quot;Bilingual&quot;</span><span class="s0">, </span><span class="s4">&quot;Management experience&quot;</span><span class="s0">, </span><span class="s4">&quot;Communication skills (both written and oral)&quot;</span><span class="s0">, </span><span class="s4">&quot;Customer service&quot;</span><span class="s0">, </span><span class="s4">&quot;Problem-solving&quot;</span><span class="s0">, </span><span class="s4">&quot;Organizational skills&quot;</span><span class="s0">, </span><span class="s4">&quot;Inventive&quot;</span><span class="s0">, </span><span class="s4">&quot;Handling conflict&quot;</span><span class="s0">, </span><span class="s4">&quot;Listening&quot;</span><span class="s0">, </span><span class="s4">&quot;Attention to detail&quot;</span><span class="s0">, </span><span class="s4">&quot;Collaboration&quot;</span><span class="s0">, </span><span class="s4">&quot;Curious&quot;</span><span class="s0">, </span><span class="s4">&quot;Diplomacy&quot;</span><span class="s0">, </span><span class="s4">&quot;Friendly&quot;</span><span class="s0">, </span><span class="s4">&quot;Flexible&quot;</span><span class="s0">, </span><span class="s4">&quot;Responsible&quot;</span><span class="s0">, </span><span class="s4">&quot;Punctual&quot;</span><span class="s0">, </span><span class="s4">&quot;Reliable&quot;</span><span class="s0">, </span><span class="s4">&quot;Takes initiative&quot;</span><span class="s0">, </span><span class="s4">&quot;Persistent&quot;</span><span class="s0">, </span><span class="s4">&quot;Leadership&quot;</span><span class="s0">, </span><span class="s4">&quot;Enthusiastic&quot;</span><span class="s0">, </span><span class="s4">&quot;Android Studio&quot;</span><span class="s0">, </span><span class="s4">&quot;Android Development&quot;</span><span class="s0">, </span><span class="s4">&quot;Web Development&quot;</span><span class="s0">, </span><span class="s4">&quot;Machine Learning&quot;</span><span class="s0">, </span><span class="s4">&quot;Artificial intelligence&quot;</span><span class="s0">, </span><span class="s4">&quot;Robots&quot;</span><span class="s0">, </span><span class="s4">&quot;Augmented reality&quot;</span><span class="s0">, </span><span class="s4">&quot;virtual reality&quot;</span><span class="s0">, </span><span class="s4">&quot;Cryptography&quot;</span><span class="s0">, </span><span class="s4">&quot;Hacking&quot;</span><span class="s0">, </span><span class="s4">&quot;Xml&quot;</span><span class="s1">}</span><span class="s0">;</span>
+        <span class="s3">//create an adapter to describe how the items are displayed, adapters are used in several places in android.</span>
+        <span class="s3">//There are multiple variations of this, but this is the basic variant.</span>
+        <span class="s1">ArrayAdapter&lt;String&gt; interestAdapter = </span><span class="s0">new </span><span class="s1">ArrayAdapter&lt;String&gt;(getContext()</span><span class="s0">, </span><span class="s1">android.R.layout.simple_spinner_dropdown_item</span><span class="s0">, </span><span class="s1">ArrayInterest)</span><span class="s0">;</span>
+        <span class="s3">//set the spinners adapter to the previously created one.</span>
+        <span class="s1">RelateSpin.setAdapter(interestAdapter)</span><span class="s0">;</span>
+        <span class="s1">interestAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)</span><span class="s0">;</span>
+
+
+
+
+        <span class="s3">//-------------------------------Company Spinner code----------------------------</span>
+
+        <span class="s1">String[] ArrayCompany = {</span><span class="s4">&quot;None&quot;</span><span class="s0">,</span><span class="s4">&quot;Reliance Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;Indian Oil Corporation&quot;</span><span class="s0">, </span><span class="s4">&quot;Oil  Natural Gas Corporation&quot;</span><span class="s0">, </span><span class="s4">&quot;State Bank of India&quot;</span><span class="s0">, </span><span class="s4">&quot;Bharat Petroleum Corporation&quot;</span><span class="s0">, </span><span class="s4">&quot;Tata Motors&quot;</span><span class="s0">, </span><span class="s4">&quot;Rajesh Exports&quot;</span><span class="s0">, </span><span class="s4">&quot;Tata Consultancy Services&quot;</span><span class="s0">, </span><span class="s4">&quot;ICICI Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;Larsen  Toubro&quot;</span><span class="s0">, </span><span class="s4">&quot;HDFC Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;Tata Steel&quot;</span><span class="s0">, </span><span class="s4">&quot;Hindalco Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;NTPC&quot;</span><span class="s0">, </span><span class="s4">&quot;HDFC&quot;</span><span class="s0">, </span><span class="s4">&quot;Coal India&quot;</span><span class="s0">, </span><span class="s4">&quot;Mahindra  Mahindra&quot;</span><span class="s0">, </span><span class="s4">&quot;Infosys&quot;</span><span class="s0">, </span><span class="s4">&quot;Bank of Baroda&quot;</span><span class="s0">, </span><span class="s4">&quot;Bharti Airtel&quot;</span><span class="s0">, </span><span class="s4">&quot;Nayara Energy&quot;</span><span class="s0">, </span><span class="s4">&quot;Vedanta&quot;</span><span class="s0">, </span><span class="s4">&quot;Axis Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;Grasim Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;Maruti Suzuki India&quot;</span><span class="s0">, </span><span class="s4">&quot;GAIL (India)&quot;</span><span class="s0">, </span><span class="s4">&quot;JSW Steel&quot;</span><span class="s0">, </span><span class="s4">&quot;HCL Technologies&quot;</span><span class="s0">, </span><span class="s4">&quot;Steel Authority of India&quot;</span><span class="s0">, </span><span class="s4">&quot;Punjab National Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;Motherson Sumi Systems&quot;</span><span class="s0">, </span><span class="s4">&quot;Wipro&quot;</span><span class="s0">, </span><span class="s4">&quot;Power Finance Corporation&quot;</span><span class="s0">, </span><span class="s4">&quot;Canara Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;Bajaj Finserv&quot;</span><span class="s0">, </span><span class="s4">&quot;ITC&quot;</span><span class="s0">, </span><span class="s4">&quot;General Insurance Corporation of India&quot;</span><span class="s0">, </span><span class="s4">&quot;Kotak Mahindra Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;Bank of India&quot;</span><span class="s0">, </span><span class="s4">&quot;Vodafone Idea&quot;</span><span class="s0">, </span><span class="s4">&quot;Jindal Steel  Power&quot;</span><span class="s0">, </span><span class="s4">&quot;Union Bank of India&quot;</span><span class="s0">, </span><span class="s4">&quot;UltraTech Cement&quot;</span><span class="s0">, </span><span class="s4">&quot;Power Grid Corporation of India&quot;</span><span class="s0">, </span><span class="s4">&quot;Hindustan Unilever&quot;</span><span class="s0">, </span><span class="s4">&quot;Tech Mahindra&quot;</span><span class="s0">, </span><span class="s4">&quot;Yes Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;InterGlobe Aviation&quot;</span><span class="s0">, </span><span class="s4">&quot;UPL&quot;</span><span class="s0">, </span><span class="s4">&quot;IndusInd Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;Sun Pharmaceuticals Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;NABARD&quot;</span><span class="s0">, </span><span class="s4">&quot;Bajaj Auto&quot;</span><span class="s0">, </span><span class="s4">&quot;Tata Power Company&quot;</span><span class="s0">, </span><span class="s4">&quot;Hero MotoCorp&quot;</span><span class="s0">, </span><span class="s4">&quot;New India Assurance Company&quot;</span><span class="s0">, </span><span class="s4">&quot;IFFCO&quot;</span><span class="s0">, </span><span class="s4">&quot;Adani Power&quot;</span><span class="s0">, </span><span class="s4">&quot;Ambuja Cements&quot;</span><span class="s0">, </span><span class="s4">&quot;Central Bank of India&quot;</span><span class="s0">, </span><span class="s4">&quot;IDBI Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;Avenue Supermarts&quot;</span><span class="s0">, </span><span class="s4">&quot;Indian Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;Aurobindo Pharma&quot;</span><span class="s0">, </span><span class="s4">&quot;Reliance Capital&quot;</span><span class="s0">, </span><span class="s4">&quot;Bharat Heavy Electricals&quot;</span><span class="s0">, </span><span class="s4">&quot;Reliance Infrastructure&quot;</span><span class="s0">, </span><span class="s4">&quot;Titan Company&quot;</span><span class="s0">, </span><span class="s4">&quot;Hindustan Aeronautics&quot;</span><span class="s0">, </span><span class="s4">&quot;Ashok Leyland&quot;</span><span class="s0">, </span><span class="s4">&quot;Asian Paints&quot;</span><span class="s0">, </span><span class="s4">&quot;Indian Overseas Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;Future Retail&quot;</span><span class="s0">, </span><span class="s4">&quot;Sundaram Clayton&quot;</span><span class="s0">, </span><span class="s4">&quot;LIC Housing Finance&quot;</span><span class="s0">, </span><span class="s4">&quot;TVS Motor Company&quot;</span><span class="s0">, </span><span class="s4">&quot;Max Financial Services&quot;</span><span class="s0">, </span><span class="s4">&quot;Dr. Reddys Laboratories&quot;</span><span class="s0">, </span><span class="s4">&quot;PTC India&quot;</span><span class="s0">, </span><span class="s4">&quot;UCO Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;IDFC First Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;Cipla&quot;</span><span class="s0">, </span><span class="s4">&quot;Citibank&quot;</span><span class="s0">, </span><span class="s4">&quot;Tata Chemicals&quot;</span><span class="s0">, </span><span class="s4">&quot;Tata Communications&quot;</span><span class="s0">, </span><span class="s4">&quot;Aditya Birla Capital&quot;</span><span class="s0">, </span><span class="s4">&quot;EID Parry (India)&quot;</span><span class="s0">, </span><span class="s4">&quot;Shriram Transport Finance Company&quot;</span><span class="s0">, </span><span class="s4">&quot;MRF&quot;</span><span class="s0">, </span><span class="s4">&quot;Apollo Tyres&quot;</span><span class="s0">, </span><span class="s4">&quot;Toyota Kirloskar Motor&quot;</span><span class="s0">, </span><span class="s4">&quot;Lupin&quot;</span><span class="s0">, </span><span class="s4">&quot;ACC&quot;</span><span class="s0">, </span><span class="s4">&quot;Federal Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;Piramal Enterprises&quot;</span><span class="s0">, </span><span class="s4">&quot;Rail Vikas Nigam&quot;</span><span class="s0">, </span><span class="s4">&quot;Exide Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;Oil India&quot;</span><span class="s0">, </span><span class="s4">&quot;Standard Chartered Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;Cadila Healthcare&quot;</span><span class="s0">, </span><span class="s4">&quot;Siemens&quot;</span><span class="s0">, </span><span class="s4">&quot;Torrent Power&quot;</span><span class="s0">, </span><span class="s4">&quot;HSBC&quot;</span><span class="s0">, </span><span class="s4">&quot;Adani Ports and Special Economic Zone&quot;</span><span class="s0">, </span><span class="s4">&quot;Indiabulls Housing Finance&quot;</span><span class="s0">, </span><span class="s4">&quot;SpiceJet&quot;</span><span class="s0">, </span><span class="s4">&quot;SIDBI&quot;</span><span class="s0">, </span><span class="s4">&quot;National Fertilizer&quot;</span><span class="s0">, </span><span class="s4">&quot;Jindal Stainless&quot;</span><span class="s0">, </span><span class="s4">&quot;Bank of Maharashtra&quot;</span><span class="s0">, </span><span class="s4">&quot;Shree Cement&quot;</span><span class="s0">, </span><span class="s4">&quot;Bharat Electronics&quot;</span><span class="s0">, </span><span class="s4">&quot;Kalpataru Power Transmission&quot;</span><span class="s0">, </span><span class="s4">&quot;Nestle India&quot;</span><span class="s0">, </span><span class="s4">&quot;Macrotech Developers&quot;</span><span class="s0">, </span><span class="s4">&quot;NMDC&quot;</span><span class="s0">, </span><span class="s4">&quot;Bandhan Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;Gujarat State Petronet&quot;</span><span class="s0">, </span><span class="s4">&quot;Chambal Fertilisers  Chemicals&quot;</span><span class="s0">, </span><span class="s4">&quot;Bombay Burmah Trading Corporation&quot;</span><span class="s0">, </span><span class="s4">&quot;Godrej Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;KEC International&quot;</span><span class="s0">, </span><span class="s4">&quot;MM Financial Services&quot;</span><span class="s0">, </span><span class="s4">&quot;CESC&quot;</span><span class="s0">, </span><span class="s4">&quot;Britannia Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;NLC India&quot;</span><span class="s0">, </span><span class="s4">&quot;Adani Transmission&quot;</span><span class="s0">, </span><span class="s4">&quot;godrej  Boyce Manufacturing Company&quot;</span><span class="s0">, </span><span class="s4">&quot;Apollo Hospitals Enterprise&quot;</span><span class="s0">, </span><span class="s4">&quot;Jindal Saw&quot;</span><span class="s0">, </span><span class="s4">&quot;Adani Enterprises&quot;</span><span class="s0">, </span><span class="s4">&quot;Varroc Engineering&quot;</span><span class="s0">, </span><span class="s4">&quot;Welspun Corp&quot;</span><span class="s0">, </span><span class="s4">&quot;Jaiprakash Associates&quot;</span><span class="s0">, </span><span class="s4">&quot;NHPC&quot;</span><span class="s0">, </span><span class="s4">&quot;Rain Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;Glenmark Pharmaceuticals&quot;</span><span class="s0">, </span><span class="s4">&quot;RBL Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;Bosch&quot;</span><span class="s0">, </span><span class="s4">&quot;Godrej Consumer Products&quot;</span><span class="s0">, </span><span class="s4">&quot;Afcons Infrastructure&quot;</span><span class="s0">, </span><span class="s4">&quot;Hindustan Construction Company&quot;</span><span class="s0">, </span><span class="s4">&quot;Dalmia Bharat&quot;</span><span class="s0">, </span><span class="s4">&quot;Rashtriya Chemicals  Fertilizers&quot;</span><span class="s0">, </span><span class="s4">&quot;Tata Capital&quot;</span><span class="s0">, </span><span class="s4">&quot;Tata Consumer Products&quot;</span><span class="s0">, </span><span class="s4">&quot;Dilip Buildcon&quot;</span><span class="s0">, </span><span class="s4">&quot;Muthoot Finance&quot;</span><span class="s0">, </span><span class="s4">&quot;Eicher Motors&quot;</span><span class="s0">, </span><span class="s4">&quot;Edelweiss Financial Services&quot;</span><span class="s0">, </span><span class="s4">&quot;Dewan Housing Finance Corporation&quot;</span><span class="s0">, </span><span class="s4">&quot;Jubilant Life Sciences&quot;</span><span class="s0">, </span><span class="s4">&quot;Havells India&quot;</span><span class="s0">, </span><span class="s4">&quot;United Spirits&quot;</span><span class="s0">, </span><span class="s4">&quot;GMR Infrastructure&quot;</span><span class="s0">, </span><span class="s4">&quot;JSW Energy&quot;</span><span class="s0">, </span><span class="s4">&quot;Aditya Birla Fashion  Retail&quot;</span><span class="s0">, </span><span class="s4">&quot;Polycab India&quot;</span><span class="s0">, </span><span class="s4">&quot;National Aluminium Company&quot;</span><span class="s0">, </span><span class="s4">&quot;Dabur India&quot;</span><span class="s0">, </span><span class="s4">&quot;Mphasis&quot;</span><span class="s0">, </span><span class="s4">&quot;Aster DM Healthcare&quot;</span><span class="s0">, </span><span class="s4">&quot;NCC&quot;</span><span class="s0">, </span><span class="s4">&quot;jammu and Kashmir Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;Punjab  Sind Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;South Indian Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;JK Tyre  Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;Cholamandalam Investment  Finance Co.&quot;</span><span class="s0">, </span><span class="s4">&quot;Varun Beverages&quot;</span><span class="s0">, </span><span class="s4">&quot;Alkem Laboratories&quot;</span><span class="s0">, </span><span class="s4">&quot;Export-Import Bank of India&quot;</span><span class="s0">, </span><span class="s4">&quot;Bharti Infratel&quot;</span><span class="s0">, </span><span class="s4">&quot;Security  Intelligence Services (India)&quot;</span><span class="s0">, </span><span class="s4">&quot;DCM Shriram&quot;</span><span class="s0">, </span><span class="s4">&quot;NBCC (India)&quot;</span><span class="s0">, </span><span class="s4">&quot;Reliance Power&quot;</span><span class="s0">, </span><span class="s4">&quot;Torrent Pharmaceuticals&quot;</span><span class="s0">, </span><span class="s4">&quot;Bharat Forge&quot;</span><span class="s0">, </span><span class="s4">&quot;Voltas&quot;</span><span class="s0">, </span><span class="s4">&quot;marico&quot;</span><span class="s0">, </span><span class="s4">&quot;APL Apollo Tubes&quot;</span><span class="s0">, </span><span class="s4">&quot;Karnataka Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;Mahindra CIE Automotive&quot;</span><span class="s0">, </span><span class="s4">&quot;BASF India&quot;</span><span class="s0">, </span><span class="s4">&quot;Shree Renuka Sugars&quot;</span><span class="s0">, </span><span class="s4">&quot;GSFC&quot;</span><span class="s0">, </span><span class="s4">&quot;Whirlpool of India&quot;</span><span class="s0">, </span><span class="s4">&quot;Apar Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;HUDCO&quot;</span><span class="s0">, </span><span class="s4">&quot;Uflex&quot;</span><span class="s0">, </span><span class="s4">&quot;Allcargo Logistics&quot;</span><span class="s0">, </span><span class="s4">&quot;SRF&quot;</span><span class="s0">, </span><span class="s4">&quot;ABB India&quot;</span><span class="s0">, </span><span class="s4">&quot;Pidilite Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;Deutsche Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;Arvind&quot;</span><span class="s0">, </span><span class="s4">&quot;DLF&quot;</span><span class="s0">, </span><span class="s4">&quot;Aegis Logistics&quot;</span><span class="s0">, </span><span class="s4">&quot;Karur Vysya Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;IRB Infrastructure Developers&quot;</span><span class="s0">, </span><span class="s4">&quot;Birla Corporation&quot;</span><span class="s0">, </span><span class="s4">&quot;Raymond&quot;</span><span class="s0">, </span><span class="s4">&quot;Vardhman Textiles&quot;</span><span class="s0">, </span><span class="s4">&quot;Welspun India&quot;</span><span class="s0">, </span><span class="s4">&quot;Endurance Technologies&quot;</span><span class="s0">, </span><span class="s4">&quot;Thomas Cook (India)&quot;</span><span class="s0">, </span><span class="s4">&quot;Container Corporation Of India&quot;</span><span class="s0">, </span><span class="s4">&quot;Amara Raja Batteries&quot;</span><span class="s0">, </span><span class="s4">&quot;CEAT&quot;</span><span class="s0">, </span><span class="s4">&quot;Biocon&quot;</span><span class="s0">, </span><span class="s4">&quot;Prestige Estates Projects&quot;</span><span class="s0">, </span><span class="s4">&quot;Bajaj Hindusthan Sugar&quot;</span><span class="s0">, </span><span class="s4">&quot;United Breweries&quot;</span><span class="s0">, </span><span class="s4">&quot;Berger Paints India&quot;</span><span class="s0">, </span><span class="s4">&quot;Future Lifestyle Fashions&quot;</span><span class="s0">, </span><span class="s4">&quot;Jain Irrigation Systems&quot;</span><span class="s0">, </span><span class="s4">&quot;Shriram City Union Finance&quot;</span><span class="s0">, </span><span class="s4">&quot;Prism Johnson&quot;</span><span class="s0">, </span><span class="s4">&quot;SREI Infrastructure Finance&quot;</span><span class="s0">, </span><span class="s4">&quot;ISGEC Heavy Engineering&quot;</span><span class="s0">, </span><span class="s4">&quot;JK Cement&quot;</span><span class="s0">, </span><span class="s4">&quot;Escorts&quot;</span><span class="s0">, </span><span class="s4">&quot;Sterling  Wilson Solar&quot;</span><span class="s0">, </span><span class="s4">&quot;Thermax&quot;</span><span class="s0">, </span><span class="s4">&quot;Fullerton India Credit Company&quot;</span><span class="s0">, </span><span class="s4">&quot;PNC Infratech&quot;</span><span class="s0">, </span><span class="s4">&quot;Supreme Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;PC Jeweller&quot;</span><span class="s0">, </span><span class="s4">&quot;Divis Laboratories&quot;</span><span class="s0">, </span><span class="s4">&quot;Hexaware Technologies&quot;</span><span class="s0">, </span><span class="s4">&quot;Surya Roshni&quot;</span><span class="s0">, </span><span class="s4">&quot;Mazagon Dock Shipbuilders&quot;</span><span class="s0">, </span><span class="s4">&quot;Ircon International&quot;</span><span class="s0">, </span><span class="s4">&quot;Manappuram Finance&quot;</span><span class="s0">, </span><span class="s4">&quot;Cummins India&quot;</span><span class="s0">, </span><span class="s4">&quot;Minda Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;Nirma&quot;</span><span class="s0">, </span><span class="s4">&quot;The Ramco Cements&quot;</span><span class="s0">, </span><span class="s4">&quot;Future Enterprises&quot;</span><span class="s0">, </span><span class="s4">&quot;Blue Star&quot;</span><span class="s0">, </span><span class="s4">&quot;Zee Entertainment Enterprises&quot;</span><span class="s0">, </span><span class="s4">&quot;Sadbhav Engineering&quot;</span><span class="s0">, </span><span class="s4">&quot;GNFC&quot;</span><span class="s0">, </span><span class="s4">&quot;National Housing Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;Kansai Nerolac Paints&quot;</span><span class="s0">, </span><span class="s4">&quot;The India Cements&quot;</span><span class="s0">, </span><span class="s4">&quot;Hatsun Agro Product&quot;</span><span class="s0">, </span><span class="s4">&quot;Team Lease Services&quot;</span><span class="s0">, </span><span class="s4">&quot;Ashoka Buildcon&quot;</span><span class="s0">, </span><span class="s4">&quot;CG Power  Industrial Solutions&quot;</span><span class="s0">, </span><span class="s4">&quot;Sterlite Technologies&quot;</span><span class="s0">, </span><span class="s4">&quot;Hinduja Global Solutions&quot;</span><span class="s0">, </span><span class="s4">&quot;Oracle Financial Services Software&quot;</span><span class="s0">, </span><span class="s4">&quot;KEI Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;AGC Networks&quot;</span><span class="s0">, </span><span class="s4">&quot;Balkrishna Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;AU Small Finance Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;Bajaj Electricals&quot;</span><span class="s0">, </span><span class="s4">&quot;Walmart India&quot;</span><span class="s0">, </span><span class="s4">&quot;Fortis Healthcare&quot;</span><span class="s0">, </span><span class="s4">&quot;Ipca Laboratories&quot;</span><span class="s0">, </span><span class="s4">&quot;City Union Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;Alembic Pharmaceuticals&quot;</span><span class="s0">, </span><span class="s4">&quot;IIFL Finance&quot;</span><span class="s0">, </span><span class="s4">&quot;Trident&quot;</span><span class="s0">, </span><span class="s4">&quot;India Infrastructure Finance Company&quot;</span><span class="s0">, </span><span class="s4">&quot;Balrampur Chini Mills&quot;</span><span class="s0">, </span><span class="s4">&quot;Sundaram Finance&quot;</span><span class="s0">, </span><span class="s4">&quot;Bank of America&quot;</span><span class="s0">, </span><span class="s4">&quot;Crompton Greaves Consumer Electrical&quot;</span><span class="s0">, </span><span class="s4">&quot;Shipping Corporation of India&quot;</span><span class="s0">, </span><span class="s4">&quot;Tube Investments of India&quot;</span><span class="s0">, </span><span class="s4">&quot;Indian Hotels Co&quot;</span><span class="s0">, </span><span class="s4">&quot;RattanIndia Power&quot;</span><span class="s0">, </span><span class="s4">&quot;Deepak Fertilisers  Petrochemicals Corp&quot;</span><span class="s0">, </span><span class="s4">&quot;Polyplex Corporation&quot;</span><span class="s0">, </span><span class="s4">&quot;Cyient&quot;</span><span class="s0">, </span><span class="s4">&quot;Colgate-Palmolive (India)&quot;</span><span class="s0">, </span><span class="s4">&quot;JK Lakshmi Cement&quot;</span><span class="s0">, </span><span class="s4">&quot;Dixon Technologies (India)&quot;</span><span class="s0">, </span><span class="s4">&quot;Schaeffler India&quot;</span><span class="s0">, </span><span class="s4">&quot;KRBL&quot;</span><span class="s0">, </span><span class="s4">&quot;Triveni Engineering and Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;Zensar Technologies&quot;</span><span class="s0">, </span><span class="s4">&quot;Coforge&quot;</span><span class="s0">, </span><span class="s4">&quot;Deepak Nitrite&quot;</span><span class="s0">, </span><span class="s4">&quot;Avanti Feeds&quot;</span><span class="s0">, </span><span class="s4">&quot;Aarti Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;Atul&quot;</span><span class="s0">, </span><span class="s4">&quot;Sobha&quot;</span><span class="s0">, </span><span class="s4">&quot;Zuari Agro Chemicals&quot;</span><span class="s0">, </span><span class="s4">&quot;Abbott India&quot;</span><span class="s0">, </span><span class="s4">&quot;Firstsource Solutions&quot;</span><span class="s0">, </span><span class="s4">&quot;Simplex Infrastructures&quot;</span><span class="s0">, </span><span class="s4">&quot;LT Foods&quot;</span><span class="s0">, </span><span class="s4">&quot;Future Consumer&quot;</span><span class="s0">, </span><span class="s4">&quot;Jubilant Foodworks&quot;</span><span class="s0">, </span><span class="s4">&quot;Amber Enterprises India&quot;</span><span class="s0">, </span><span class="s4">&quot;Tamilnad Mercantile Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;Tamil Nadu Newsprint  Papers&quot;</span><span class="s0">, </span><span class="s4">&quot;HFCL&quot;</span><span class="s0">, </span><span class="s4">&quot;Great Eastern Shipping Company&quot;</span><span class="s0">, </span><span class="s4">&quot;DCB Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;GSK Pharmaceuticals&quot;</span><span class="s0">, </span><span class="s4">&quot;Castrol India&quot;</span><span class="s0">, </span><span class="s4">&quot;Gujarat Ambuja Exports&quot;</span><span class="s0">, </span><span class="s4">&quot;Sonata Software&quot;</span><span class="s0">, </span><span class="s4">&quot;Sun TV Network&quot;</span><span class="s0">, </span><span class="s4">&quot;The Fertilizers  Chemicals Travancore&quot;</span><span class="s0">, </span><span class="s4">&quot;Gokul Agro Resources&quot;</span><span class="s0">, </span><span class="s4">&quot;Trent&quot;</span><span class="s0">, </span><span class="s4">&quot;Persistent Systems&quot;</span><span class="s0">, </span><span class="s4">&quot;Sundram Fasteners&quot;</span><span class="s0">, </span><span class="s4">&quot;Cochin Shipyard&quot;</span><span class="s0">, </span><span class="s4">&quot;Shoppers Stop&quot;</span><span class="s0">, </span><span class="s4">&quot;Jindal Poly Films&quot;</span><span class="s0">, </span><span class="s4">&quot;Jayaswal Neco Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;Gayatri Projects&quot;</span><span class="s0">, </span><span class="s4">&quot;Bayer CropScience&quot;</span><span class="s0">, </span><span class="s4">&quot;Time Technoplast&quot;</span><span class="s0">, </span><span class="s4">&quot;Dish TV India&quot;</span><span class="s0">, </span><span class="s4">&quot;JK Paper&quot;</span><span class="s0">, </span><span class="s4">&quot;KPR Mill&quot;</span><span class="s0">, </span><span class="s4">&quot;Jaiprakash Power Ventures&quot;</span><span class="s0">, </span><span class="s4">&quot;Kirloskar Oil Engines&quot;</span><span class="s0">, </span><span class="s4">&quot;Century Textiles  Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;Engineers India&quot;</span><span class="s0">, </span><span class="s4">&quot;India Glycols&quot;</span><span class="s0">, </span><span class="s4">&quot;Dhampur Sugar Mills&quot;</span><span class="s0">, </span><span class="s4">&quot;Oberoi Realty&quot;</span><span class="s0">, </span><span class="s4">&quot;JM Financial&quot;</span><span class="s0">, </span><span class="s4">&quot;PVR&quot;</span><span class="s0">, </span><span class="s4">&quot;PI Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;Honeywell Automation India&quot;</span><span class="s0">, </span><span class="s4">&quot;BEML&quot;</span><span class="s0">, </span><span class="s4">&quot;Birlasoft&quot;</span><span class="s0">, </span><span class="s4">&quot;SJVN&quot;</span><span class="s0">, </span><span class="s4">&quot;GHCL&quot;</span><span class="s0">, </span><span class="s4">&quot;IFB Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;Phillips Carbon Black&quot;</span><span class="s0">, </span><span class="s4">&quot;Electrotherm (India)&quot;</span><span class="s0">, </span><span class="s4">&quot;Godawari Power  Ispat&quot;</span><span class="s0">, </span><span class="s4">&quot;GE TD India&quot;</span><span class="s0">, </span><span class="s4">&quot;Venkys (India)&quot;</span><span class="s0">, </span><span class="s4">&quot;Blue Dart Express&quot;</span><span class="s0">, </span><span class="s4">&quot;Graphite India&quot;</span><span class="s0">, </span><span class="s4">&quot;Kirloskar Brothers&quot;</span><span class="s0">, </span><span class="s4">&quot;Sanofi India&quot;</span><span class="s0">, </span><span class="s4">&quot;Bata India&quot;</span><span class="s0">, </span><span class="s4">&quot;Narayana Hrudayalaya&quot;</span><span class="s0">, </span><span class="s4">&quot;Finolex Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;Brigade Enterprises&quot;</span><span class="s0">, </span><span class="s4">&quot;Godfrey Phillips India&quot;</span><span class="s0">, </span><span class="s4">&quot;AIA Engineering&quot;</span><span class="s0">, </span><span class="s4">&quot;Laurus Labs&quot;</span><span class="s0">, </span><span class="s4">&quot;Finolex Cables&quot;</span><span class="s0">, </span><span class="s4">&quot;PG Hygiene and Health Care&quot;</span><span class="s0">, </span><span class="s4">&quot;Heritage Foods&quot;</span><span class="s0">, </span><span class="s4">&quot;Force Motors&quot;</span><span class="s0">, </span><span class="s4">&quot;Mukand&quot;</span><span class="s0">, </span><span class="s4">&quot;Prime Focus&quot;</span><span class="s0">, </span><span class="s4">&quot;J Kumar Infraprojects&quot;</span><span class="s0">, </span><span class="s4">&quot;Jai Balaji Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;Prakash Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;Ujjivan Financial Services&quot;</span><span class="s0">, </span><span class="s4">&quot;SKF India&quot;</span><span class="s0">, </span><span class="s4">&quot;Strides Pharma Science&quot;</span><span class="s0">, </span><span class="s4">&quot;Page Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;Montecarlo&quot;</span><span class="s0">, </span><span class="s4">&quot;Equitas Holdings&quot;</span><span class="s0">, </span><span class="s4">&quot;Indiabulls Real Estate&quot;</span><span class="s0">, </span><span class="s4">&quot;Dhani Services&quot;</span><span class="s0">, </span><span class="s4">&quot;Kajaria Ceramics&quot;</span><span class="s0">, </span><span class="s4">&quot;Forbes  Company&quot;</span><span class="s0">, </span><span class="s4">&quot;IFCI&quot;</span><span class="s0">, </span><span class="s4">&quot;Wockhardt&quot;</span><span class="s0">, </span><span class="s4">&quot;ITD Cementation India&quot;</span><span class="s0">, </span><span class="s4">&quot;Nava Bharat Ventures&quot;</span><span class="s0">, </span><span class="s4">&quot;Garden Silk Mills&quot;</span><span class="s0">, </span><span class="s4">&quot;Redington India&quot;</span><span class="s0">, </span><span class="s4">&quot;Electrosteel Castings&quot;</span><span class="s0">, </span><span class="s4">&quot;Godrej Properties&quot;</span><span class="s0">, </span><span class="s4">&quot;JBF Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;Filatex India&quot;</span><span class="s0">, </span><span class="s4">&quot;RSWM&quot;</span><span class="s0">, </span><span class="s4">&quot;Patel Engineering&quot;</span><span class="s0">, </span><span class="s4">&quot;EPL&quot;</span><span class="s0">, </span><span class="s4">&quot;Gujarat Alkalies  Chemicals&quot;</span><span class="s0">, </span><span class="s4">&quot;G4S Secure Solutions (India)&quot;</span><span class="s0">, </span><span class="s4">&quot;Minda Corporation&quot;</span><span class="s0">, </span><span class="s4">&quot;Gland Pharma&quot;</span><span class="s0">, </span><span class="s4">&quot;Transport Corporation of India&quot;</span><span class="s0">, </span><span class="s4">&quot;Konkan Railway Corporation&quot;</span><span class="s0">, </span><span class="s4">&quot;BGR Energy Systems&quot;</span><span class="s0">, </span><span class="s4">&quot;Akzo Nobel India&quot;</span><span class="s0">, </span><span class="s4">&quot;Supreme Petrochem&quot;</span><span class="s0">, </span><span class="s4">&quot;Granules India&quot;</span><span class="s0">, </span><span class="s4">&quot;Emami&quot;</span><span class="s0">, </span><span class="s4">&quot;Bharat Dynamics&quot;</span><span class="s0">, </span><span class="s4">&quot;Brightcom Group&quot;</span><span class="s0">, </span><span class="s4">&quot;Asahi India Glass&quot;</span><span class="s0">, </span><span class="s4">&quot;Ratnamani Metals  Tubes&quot;</span><span class="s0">, </span><span class="s4">&quot;Maharashtra Seamless&quot;</span><span class="s0">, </span><span class="s4">&quot;Ajanta Pharma&quot;</span><span class="s0">, </span><span class="s4">&quot;Shankara Building Products&quot;</span><span class="s0">, </span><span class="s4">&quot;Carborundum Universal&quot;</span><span class="s0">, </span><span class="s4">&quot;Kesoram Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;GFL&quot;</span><span class="s0">, </span><span class="s4">&quot;Astral Poly Technik&quot;</span><span class="s0">, </span><span class="s4">&quot;Orient Cement&quot;</span><span class="s0">, </span><span class="s4">&quot;Rites&quot;</span><span class="s0">, </span><span class="s4">&quot;West Coast Paper Mills&quot;</span><span class="s0">, </span><span class="s4">&quot;Wheels India&quot;</span><span class="s0">, </span><span class="s4">&quot;V-Guard Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;Usha Martin&quot;</span><span class="s0">, </span><span class="s4">&quot;Parag Milk Foods&quot;</span><span class="s0">, </span><span class="s4">&quot;Linde India&quot;</span><span class="s0">, </span><span class="s4">&quot;Avadh Sugar  Energy&quot;</span><span class="s0">, </span><span class="s4">&quot;Va Tech Wabag&quot;</span><span class="s0">, </span><span class="s4">&quot;HIL&quot;</span><span class="s0">, </span><span class="s4">&quot;Huhtamaki PPL&quot;</span><span class="s0">, </span><span class="s4">&quot;GE Power India&quot;</span><span class="s0">, </span><span class="s4">&quot;Canon India&quot;</span><span class="s0">, </span><span class="s4">&quot;Galaxy Surfactants&quot;</span><span class="s0">, </span><span class="s4">&quot;Magma Fincorp&quot;</span><span class="s0">, </span><span class="s4">&quot;Lakshmi Vilas Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;Suzlon Energy&quot;</span><span class="s0">, </span><span class="s4">&quot;KNR Constructions&quot;</span><span class="s0">, </span><span class="s4">&quot;Denso Haryana&quot;</span><span class="s0">, </span><span class="s4">&quot;Jayant Agro Organics&quot;</span><span class="s0">, </span><span class="s4">&quot;Relaxo Footwears&quot;</span><span class="s0">, </span><span class="s4">&quot;MEP Infrastructure Developers&quot;</span><span class="s0">, </span><span class="s4">&quot;Radico Khaitan&quot;</span><span class="s0">, </span><span class="s4">&quot;Sutlej Textiles and Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;BNP Paribas&quot;</span><span class="s0">, </span><span class="s4">&quot;Siyaram Silk Mills&quot;</span><span class="s0">, </span><span class="s4">&quot;Jana Small Finance Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;Himatsingka Seide&quot;</span><span class="s0">, </span><span class="s4">&quot;Johnson Controls - Hitachi Air Condition. India&quot;</span><span class="s0">, </span><span class="s4">&quot;Religare Enterprises&quot;</span><span class="s0">, </span><span class="s4">&quot;3M India&quot;</span><span class="s0">, </span><span class="s4">&quot;Dalmia Bharat Sugar  Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;Nectar Lifescience&quot;</span><span class="s0">, </span><span class="s4">&quot;Pfizer&quot;</span><span class="s0">, </span><span class="s4">&quot;Transcorp International&quot;</span><span class="s0">, </span><span class="s4">&quot;Motilal Oswal Financial Services&quot;</span><span class="s0">, </span><span class="s4">&quot;IRCTC&quot;</span><span class="s0">, </span><span class="s4">&quot;Hindusthan National Glass  Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;HT Media&quot;</span><span class="s0">, </span><span class="s4">&quot;Solar Industries India&quot;</span><span class="s0">, </span><span class="s4">&quot;NIIT&quot;</span><span class="s0">, </span><span class="s4">&quot;Sumitomo Chemical India&quot;</span><span class="s0">, </span><span class="s4">&quot;Century Plyboards (India)&quot;</span><span class="s0">, </span><span class="s4">&quot;Sify Technologies&quot;</span><span class="s0">, </span><span class="s4">&quot;Nilkamal&quot;</span><span class="s0">, </span><span class="s4">&quot;Vindhya Telelinks&quot;</span><span class="s0">, </span><span class="s4">&quot;Meghmani Organics&quot;</span><span class="s0">, </span><span class="s4">&quot;Cosmo Films&quot;</span><span class="s0">, </span><span class="s4">&quot;Take Solutions&quot;</span><span class="s0">, </span><span class="s4">&quot;DB Corp&quot;</span><span class="s0">, </span><span class="s4">&quot;H.G. Infra Engineering&quot;</span><span class="s0">, </span><span class="s4">&quot;HEG&quot;</span><span class="s0">, </span><span class="s4">&quot;Rane Holdings&quot;</span><span class="s0">, </span><span class="s4">&quot;HeidelbergCement India&quot;</span><span class="s0">, </span><span class="s4">&quot;Sheela Foam&quot;</span><span class="s0">, </span><span class="s4">&quot;Indo Rama Synthetics (India)&quot;</span><span class="s0">, </span><span class="s4">&quot;Jindal Worldwide&quot;</span><span class="s0">, </span><span class="s4">&quot;Orient Electric&quot;</span><span class="s0">, </span><span class="s4">&quot;Power Mech Projects&quot;</span><span class="s0">, </span><span class="s4">&quot;KPIT Technologies&quot;</span><span class="s0">, </span><span class="s4">&quot;American Express Bank&quot;</span><span class="s0">, </span><span class="s4">&quot;Pennar Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;Jagran Prakashan&quot;</span><span class="s0">, </span><span class="s4">&quot;VRL Logistics&quot;</span><span class="s0">, </span><span class="s4">&quot;TVS Srichakra&quot;</span><span class="s0">, </span><span class="s4">&quot;Dishman Carbogen Amcis&quot;</span><span class="s0">, </span><span class="s4">&quot;Indo Count Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;Natco Pharma&quot;</span><span class="s0">, </span><span class="s4">&quot;TTK Prestige&quot;</span><span class="s0">, </span><span class="s4">&quot;Southern Petrochemical Industries Corporation&quot;</span><span class="s0">, </span><span class="s4">&quot;Subros&quot;</span><span class="s0">, </span><span class="s4">&quot;KIOCL&quot;</span><span class="s0">, </span><span class="s4">&quot;Savita Oil Technologies&quot;</span><span class="s0">, </span><span class="s4">&quot;Nahar Spinning Mills&quot;</span><span class="s0">, </span><span class="s4">&quot;Sharda Cropchem&quot;</span><span class="s0">, </span><span class="s4">&quot;Gokul Refoils and Solvent&quot;</span><span class="s0">, </span><span class="s4">&quot;Sarda Energy  Minerals&quot;</span><span class="s0">, </span><span class="s4">&quot;HSIL&quot;</span><span class="s0">, </span><span class="s4">&quot;Max Healthcare Institute&quot;</span><span class="s0">, </span><span class="s4">&quot;Greaves Cotton&quot;</span><span class="s0">, </span><span class="s4">&quot;WABCO India&quot;</span><span class="s0">, </span><span class="s4">&quot;Tanla Platforms&quot;</span><span class="s0">, </span><span class="s4">&quot;Bombay Dyeing  Manufacturing Company&quot;</span><span class="s0">, </span><span class="s4">&quot;Sandhar Technologies&quot;</span><span class="s0">, </span><span class="s4">&quot;Texmaco Rail  Engineering&quot;</span><span class="s0">, </span><span class="s4">&quot;Phoenix Mills&quot;</span><span class="s0">, </span><span class="s4">&quot;Kirloskar Industries&quot;</span><span class="s0">, </span><span class="s4">&quot;Bilcare&quot;</span><span class="s0">, </span><span class="s4">&quot;Ahluwalia Contracts (India)&quot;</span><span class="s0">, </span><span class="s4">&quot;IOL Chemicals  Pharmaceuticals&quot;</span><span class="s0">, </span><span class="s4">&quot;Flipkart&quot;</span><span class="s0">, </span><span class="s4">&quot;Vmware&quot;</span><span class="s0">, </span><span class="s4">&quot;Nutanix&quot;</span><span class="s0">, </span><span class="s4">&quot;Oyo rooms&quot;</span><span class="s0">, </span><span class="s4">&quot;Goibibo&quot;</span><span class="s0">, </span><span class="s4">&quot;MakeMyTrip&quot;</span><span class="s0">, </span><span class="s4">&quot;Wow! Momo&quot;</span><span class="s0">, </span><span class="s4">&quot;Ola Cabs&quot;</span><span class="s0">, </span><span class="s4">&quot;AddressHealth&quot;</span><span class="s0">, </span><span class="s4">&quot;Zomato&quot;</span><span class="s0">, </span><span class="s4">&quot;One97 (Paytm)&quot;</span><span class="s0">, </span><span class="s4">&quot;FreshToHome&quot;</span><span class="s0">, </span><span class="s4">&quot;‍FreshMenu&quot;</span><span class="s0">, </span><span class="s4">&quot;Flyrobe&quot;</span><span class="s0">, </span><span class="s4">&quot;Myra&quot;</span><span class="s0">, </span><span class="s4">&quot;Cure.Fit&quot;</span><span class="s0">, </span><span class="s4">&quot;Dunzo&quot;</span><span class="s0">, </span><span class="s4">&quot;Shuttl&quot;</span><span class="s0">, </span><span class="s4">&quot;Digit Insurance&quot;</span><span class="s0">, </span><span class="s4">&quot;CoolBerg&quot;</span><span class="s0">, </span><span class="s4">&quot;Cleardekho&quot;</span><span class="s0">, </span><span class="s4">&quot;The Minimalist&quot;</span><span class="s0">, </span><span class="s4">&quot;Razorpay&quot;</span><span class="s0">, </span><span class="s4">&quot;Nineleaps&quot;</span><span class="s0">, </span><span class="s4">&quot;Innov8 Coworking&quot;</span><span class="s0">, </span><span class="s4">&quot;Schbang&quot;</span><span class="s0">, </span><span class="s4">&quot;Acko General Insurance&quot;</span><span class="s0">, </span><span class="s4">&quot;Treebo Hotels&quot;</span><span class="s0">, </span><span class="s4">&quot;InCred&quot;</span><span class="s0">, </span><span class="s4">&quot;Jumbotail&quot;</span><span class="s0">, </span><span class="s4">&quot;DocTalk&quot;</span><span class="s0">, </span><span class="s4">&quot;Smallcase&quot;</span><span class="s0">, </span><span class="s4">&quot;Vedantu&quot;</span><span class="s0">, </span><span class="s4">&quot;Instavans&quot;</span><span class="s0">, </span><span class="s4">&quot;Loan Frame&quot;</span><span class="s0">, </span><span class="s4">&quot;Overcart&quot;</span><span class="s0">, </span><span class="s4">&quot;Flock&quot;</span><span class="s0">, </span><span class="s4">&quot;Doctor Insta&quot;</span><span class="s0">, </span><span class="s4">&quot;Cowrks&quot;</span><span class="s0">, </span><span class="s4">&quot;1Mg&quot;</span><span class="s0">, </span><span class="s4">&quot;Cars24&quot;</span><span class="s0">, </span><span class="s4">&quot;Dailyhunt&quot;</span><span class="s0">, </span><span class="s4">&quot;Ebutor&quot;</span><span class="s0">, </span><span class="s4">&quot;Meesho&quot;</span><span class="s0">, </span><span class="s4">&quot;MilkBasket&quot;</span><span class="s0">, </span><span class="s4">&quot;PharmEasy&quot;</span><span class="s0">, </span><span class="s4">&quot;Policybazaar&quot;</span><span class="s0">, </span><span class="s4">&quot;Revv&quot;</span><span class="s0">, </span><span class="s4">&quot;Sharechat&quot;</span><span class="s0">, </span><span class="s4">&quot;Nykaa&quot;</span><span class="s0">, </span><span class="s4">&quot;Toppr&quot;</span><span class="s0">, </span><span class="s4">&quot;TravelTriangle&quot;</span><span class="s0">, </span><span class="s4">&quot;Urban Ladder&quot;</span><span class="s0">, </span><span class="s4">&quot;Aisle&quot;</span><span class="s0">, </span><span class="s4">&quot;Me&quot;</span><span class="s0">, </span><span class="s4">&quot;Bombay Shaving Company&quot;</span><span class="s0">, </span><span class="s4">&quot;POPxo&quot;</span><span class="s0">, </span><span class="s4">&quot;Zestmoney&quot;</span><span class="s0">, </span><span class="s4">&quot;Xpressbees&quot;</span><span class="s0">, </span><span class="s4">&quot;Swiggy&quot;</span><span class="s0">, </span><span class="s4">&quot;Boeing&quot;</span><span class="s0">, </span><span class="s4">&quot;Snapdeal&quot;</span><span class="s0">, </span><span class="s4">&quot;Jio&quot;</span><span class="s0">, </span><span class="s4">&quot;Arcesium&quot;</span><span class="s0">, </span><span class="s4">&quot;Amazon&quot;</span><span class="s0">, </span><span class="s4">&quot;Microsoft&quot;</span><span class="s0">, </span><span class="s4">&quot;Apple&quot;</span><span class="s0">, </span><span class="s4">&quot;Netflix&quot;</span><span class="s0">, </span><span class="s4">&quot;Facebook&quot;</span><span class="s0">, </span><span class="s4">&quot;Snapdeal&quot;</span><span class="s0">, </span><span class="s4">&quot;Ixigo&quot;</span><span class="s0">, </span><span class="s4">&quot;Walmart&quot;</span><span class="s0">, </span><span class="s4">&quot;Hashedin&quot;</span><span class="s0">, </span><span class="s4">&quot;Linkedin&quot;</span><span class="s0">, </span><span class="s4">&quot;Zomato&quot;</span><span class="s0">, </span><span class="s4">&quot;Swiggy&quot;</span><span class="s0">, </span><span class="s4">&quot;Uber&quot;</span><span class="s0">, </span><span class="s4">&quot;Urban company&quot;</span><span class="s0">, </span><span class="s4">&quot;Dunzo&quot;</span><span class="s0">, </span><span class="s4">&quot;Kronos&quot;</span><span class="s0">, </span><span class="s4">&quot;Tekio&quot;</span><span class="s0">, </span><span class="s4">&quot;Mmt&quot;</span><span class="s0">, </span><span class="s4">&quot;Adobe&quot;</span><span class="s0">, </span><span class="s4">&quot;Cadence&quot;</span><span class="s0">, </span><span class="s4">&quot;Genpact&quot;</span><span class="s0">, </span><span class="s4">&quot;Jp morgan&quot;</span><span class="s0">, </span><span class="s4">&quot;Salesforce&quot;</span><span class="s0">, </span><span class="s4">&quot;Visa&quot;</span><span class="s0">, </span><span class="s4">&quot;Phonepe&quot;</span><span class="s0">, </span><span class="s4">&quot;Mpl&quot;</span><span class="s0">, </span><span class="s4">&quot;Deloitte&quot;</span><span class="s0">, </span><span class="s4">&quot;Qualcomm&quot;</span><span class="s0">, </span><span class="s4">&quot;Mind tree&quot;</span><span class="s0">, </span><span class="s4">&quot;Zoho&quot;</span><span class="s0">, </span><span class="s4">&quot;Atlassian&quot;</span><span class="s0">, </span><span class="s4">&quot;Skack&quot;</span><span class="s0">, </span><span class="s4">&quot;Ibm&quot;</span><span class="s0">, </span><span class="s4">&quot;Oracle&quot;</span><span class="s0">, </span><span class="s4">&quot;Dell&quot;</span><span class="s0">, </span><span class="s4">&quot;Samsung&quot;</span><span class="s0">, </span><span class="s4">&quot;Sap&quot;</span><span class="s0">, </span><span class="s4">&quot;Goibibo&quot;</span><span class="s0">, </span><span class="s4">&quot;Paytm&quot;</span><span class="s0">, </span><span class="s4">&quot;Paypal&quot;</span><span class="s0">, </span><span class="s4">&quot;Gojek&quot;</span><span class="s0">, </span><span class="s4">&quot;Mckinsey&quot;</span><span class="s0">, </span><span class="s4">&quot;Vedantu&quot;</span><span class="s0">, </span><span class="s4">&quot;Sharechat&quot;</span><span class="s0">, </span><span class="s4">&quot;Reliance jio&quot;</span><span class="s0">, </span><span class="s4">&quot;Vmware&quot;</span><span class="s0">, </span><span class="s4">&quot;Harness&quot;</span><span class="s0">, </span><span class="s4">&quot;Kafka&quot;</span><span class="s0">, </span><span class="s4">&quot;Morgan Stanley&quot;</span><span class="s0">, </span><span class="s4">&quot;Nutanix&quot;</span><span class="s0">, </span><span class="s4">&quot;Pratilipi&quot;</span><span class="s0">, </span><span class="s4">&quot;Digital guardian&quot;</span><span class="s0">, </span><span class="s4">&quot;Flobiz&quot;</span><span class="s0">, </span><span class="s4">&quot;Grab&quot;</span><span class="s0">, </span><span class="s4">&quot;Coforge ltd&quot;</span><span class="s0">, </span><span class="s4">&quot;SanDisk&quot;</span><span class="s0">, </span><span class="s4">&quot;Target&quot;</span><span class="s0">, </span><span class="s4">&quot;Jaro tech&quot;</span><span class="s0">, </span><span class="s4">&quot;Scaler&quot;</span><span class="s0">, </span><span class="s4">&quot;McAfee&quot;</span><span class="s0">, </span><span class="s4">&quot;Boeing&quot;</span><span class="s0">, </span><span class="s4">&quot;Siemens&quot;</span><span class="s0">, </span><span class="s4">&quot;Texas instruments&quot;</span><span class="s0">, </span><span class="s4">&quot;Commvault&quot;</span><span class="s0">, </span><span class="s4">&quot;Veeam&quot;</span><span class="s0">, </span><span class="s4">&quot;Radware&quot;</span><span class="s0">, </span><span class="s4">&quot;Amdocs&quot;</span><span class="s0">, </span><span class="s4">&quot;Innovaccer&quot;</span><span class="s0">, </span><span class="s4">&quot;Intuit&quot;</span><span class="s0">, </span><span class="s4">&quot;Inmobi&quot;</span><span class="s0">, </span><span class="s4">&quot;Curefit&quot;</span><span class="s0">, </span><span class="s4">&quot;Infosys specialist programmer&quot;</span><span class="s0">, </span><span class="s4">&quot;Arcesium&quot;</span><span class="s0">, </span><span class="s4">&quot;Optum&quot;</span><span class="s0">, </span><span class="s4">&quot;Publicis sapient&quot;</span><span class="s0">, </span><span class="s4">&quot;Exl&quot;</span><span class="s0">, </span><span class="s4">&quot;Sony&quot;</span><span class="s0">, </span><span class="s4">&quot;Hughes systique technology (hst)&quot;</span><span class="s0">, </span><span class="s4">&quot;Tata cliq&quot;</span><span class="s0">, </span><span class="s4">&quot;Wells Fargo&quot;</span><span class="s0">, </span><span class="s4">&quot;Sandive&quot;</span><span class="s0">, </span><span class="s4">&quot;Global logic&quot;</span><span class="s0">, </span><span class="s4">&quot;Bny melon&quot;</span><span class="s0">, </span><span class="s4">&quot;Ion group&quot;</span><span class="s1">}</span><span class="s0">;</span>
+        <span class="s3">//create an adapter to describe how the items are displayed, adapters are used in several places in android.</span>
+        <span class="s3">//There are multiple variations of this, but this is the basic variant.</span>
+        <span class="s1">ArrayAdapter&lt;String&gt; company_adapter = </span><span class="s0">new </span><span class="s1">ArrayAdapter&lt;String&gt;(getContext()</span><span class="s0">, </span><span class="s1">android.R.layout.simple_spinner_dropdown_item</span><span class="s0">, </span><span class="s1">ArrayCompany)</span><span class="s0">;</span>
+        <span class="s3">//set the spinners adapter to the previously created one.</span>
+        <span class="s1">CompanySpin.setAdapter(company_adapter)</span><span class="s0">;</span>
+        <span class="s1">CompanySpinValue = CompanySpin.getSelectedItem().toString()</span><span class="s0">;</span>
+
+
+        <span class="s3">///------------------------Two spinners code ends-------------------------///</span>
+
+        <span class="s3">//------------------Grabbing Images on click-------------------------//</span>
+
+        <span class="s1">ImageBtn.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@SuppressWarnings(</span><span class="s4">&quot;deprecation&quot;</span><span class="s1">)</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(Intent.ACTION_GET_CONTENT)</span><span class="s0">;</span>
+                <span class="s1">intent.setType(</span><span class="s4">&quot;image/*&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">startActivityForResult(intent</span><span class="s0">, </span><span class="s1">RESULT_LOAD_IMAGE)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+
+        <span class="s1">})</span><span class="s0">;</span>
+
+        <span class="s1">VideoBtn.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@SuppressWarnings(</span><span class="s4">&quot;deprecation&quot;</span><span class="s1">)</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(Intent.ACTION_GET_CONTENT)</span><span class="s0">;</span>
+                <span class="s1">intent.setType(</span><span class="s4">&quot;video/*&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">startActivityForResult(intent</span><span class="s0">, </span><span class="s1">RESULT_LOAD_video)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+        <span class="s1">FileBtn.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@SuppressWarnings(</span><span class="s4">&quot;deprecation&quot;</span><span class="s1">)</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+
+                <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(Intent.ACTION_GET_CONTENT)</span><span class="s0">;</span>
+                <span class="s1">String[] mimeTypes =</span>
+                        <span class="s1">{</span><span class="s4">&quot;application/pdf&quot;</span><span class="s0">,</span><span class="s4">&quot;application/vnd.openxmlformats-officedocument.presentationml.presentation&quot;</span><span class="s0">,</span><span class="s4">&quot;application/vnd.ms-powerpoint&quot;</span><span class="s1">}</span><span class="s0">;</span>
+                <span class="s1">intent.addCategory(Intent.CATEGORY_OPENABLE)</span><span class="s0">;</span>
+
+                <span class="s0">if </span><span class="s1">(Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.KITKAT) {</span>
+                    <span class="s1">intent.setType(mimeTypes.length == </span><span class="s2">1 </span><span class="s1">? mimeTypes[</span><span class="s2">0</span><span class="s1">] : </span><span class="s4">&quot;*/*&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                    <span class="s0">if </span><span class="s1">(mimeTypes.length &gt; </span><span class="s2">0</span><span class="s1">) {</span>
+                        <span class="s1">intent.putExtra(Intent.EXTRA_MIME_TYPES</span><span class="s0">, </span><span class="s1">mimeTypes)</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+                <span class="s1">} </span><span class="s0">else </span><span class="s1">{</span>
+                    <span class="s1">String mimeTypesStr = </span><span class="s4">&quot;&quot;</span><span class="s0">;</span>
+                    <span class="s0">for </span><span class="s1">(String mimeType : mimeTypes) {</span>
+                        <span class="s1">mimeTypesStr += mimeType + </span><span class="s4">&quot;|&quot;</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+                    <span class="s1">intent.setType(mimeTypesStr.substring(</span><span class="s2">0</span><span class="s0">,</span><span class="s1">mimeTypesStr.length() - </span><span class="s2">1</span><span class="s1">))</span><span class="s0">;</span>
+                <span class="s1">}</span>
+                <span class="s1">startActivityForResult(Intent.createChooser(intent</span><span class="s0">,</span><span class="s4">&quot;ChooseFile&quot;</span><span class="s1">)</span><span class="s0">, </span><span class="s1">RESULT_LOAD_File)</span><span class="s0">;</span>
+
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+        <span class="s3">//-----------setting recyclerview in tag btn------------</span>
+
+<span class="s3">//========************=============***************testing code ===================*****************========//</span>
+<span class="s3">//========************=============***************testing code ===================*****************========//</span>
+<span class="s3">//========************=============***************testing code ===================*****************========//</span>
+
+        <span class="s1">recyclerView = bottomSheetDialog.findViewById(R.id.tabRecycler)</span><span class="s0">;</span>
+        <span class="s1">recyclerView.setLayoutManager(</span><span class="s0">new </span><span class="s1">LinearLayoutManager(getContext()))</span><span class="s0">;</span>
+        <span class="s1">recyclerView.setHasFixedSize(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+
+
+        <span class="s1">userinput = bottomSheetDialog.findViewById(R.id.TypeChipsTag)</span><span class="s0">;</span>
+        <span class="s1">done =bottomSheetDialog.findViewById(R.id.DoneTag)</span><span class="s0">;</span>
+
+        <span class="s1">done.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                <span class="s1">String Data = userinput.getText().toString()</span><span class="s0">;</span>
+                <span class="s1">PersonTags= tagAdapter.getArrayTags()</span><span class="s0">;</span>
+                <span class="s1">PersonTagsClone =PersonTags</span><span class="s0">;</span>
+                <span class="s0">if </span><span class="s1">(!PersonTagsClone.isEmpty()){</span>
+                    <span class="s0">if </span><span class="s1">(PersonTagsClone.size() &gt; </span><span class="s2">1</span><span class="s1">){</span>
+
+                        <span class="s3">// Read from the database</span>
+
+                        <span class="s1">Ref= FirebaseDatabase.getInstance().getReference(</span><span class="s4">&quot;Users&quot;</span><span class="s1">).child(PersonTags.get(</span><span class="s2">0</span><span class="s1">)).child(</span><span class="s4">&quot;userName&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                        <span class="s1">Ref.addValueEventListener(</span><span class="s0">new </span><span class="s1">ValueEventListener() {</span>
+                            <span class="s1">@Override</span>
+                            <span class="s0">public void </span><span class="s1">onDataChange(DataSnapshot dataSnapshot) {</span>
+                                <span class="s3">// This method is called once with the initial value and again</span>
+                                <span class="s3">// whenever data at this location is updated.</span>
+                                <span class="s1">String value = dataSnapshot.getValue().toString()</span><span class="s0">;</span>
+                                <span class="s1">ShowTags1.setText(value+</span><span class="s4">&quot;,&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                            <span class="s1">}</span>
+
+                            <span class="s1">@Override</span>
+                            <span class="s0">public void </span><span class="s1">onCancelled(DatabaseError error) {</span>
+                                <span class="s3">// Failed to read value</span>
+
+                            <span class="s1">}</span>
+                        <span class="s1">})</span><span class="s0">;</span>
+
+                        <span class="s1">Ref= FirebaseDatabase.getInstance().getReference(</span><span class="s4">&quot;Users&quot;</span><span class="s1">).child(PersonTags.get(</span><span class="s2">1</span><span class="s1">)).child(</span><span class="s4">&quot;userName&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                        <span class="s1">Ref.addValueEventListener(</span><span class="s0">new </span><span class="s1">ValueEventListener() {</span>
+                            <span class="s1">@Override</span>
+                            <span class="s0">public void </span><span class="s1">onDataChange(DataSnapshot dataSnapshot) {</span>
+                                <span class="s3">// This method is called once with the initial value and again</span>
+                                <span class="s3">// whenever data at this location is updated.</span>
+                                <span class="s1">String value = dataSnapshot.getValue().toString()</span><span class="s0">;</span>
+                                <span class="s1">ShowTags2.setText(value)</span><span class="s0">;</span>
+                            <span class="s1">}</span>
+
+                            <span class="s1">@Override</span>
+                            <span class="s0">public void </span><span class="s1">onCancelled(DatabaseError error) {</span>
+                                <span class="s3">// Failed to read value</span>
+
+                            <span class="s1">}</span>
+                        <span class="s1">})</span><span class="s0">;</span>
+                        <span class="s0">if </span><span class="s1">((PersonTagsClone.size()-</span><span class="s2">2</span><span class="s1">) &gt; </span><span class="s2">1</span><span class="s1">) {</span>
+                            <span class="s1">ShowTags3.setText(</span><span class="s4">&quot; and &quot; </span><span class="s1">+ (PersonTagsClone.size() - </span><span class="s2">2</span><span class="s1">) + </span><span class="s4">&quot; others&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                        <span class="s1">}</span>
+
+                    <span class="s1">}</span><span class="s0">else </span><span class="s1">{</span>
+
+                        <span class="s1">Ref= FirebaseDatabase.getInstance().getReference(</span><span class="s4">&quot;Users&quot;</span><span class="s1">).child(PersonTags.get(</span><span class="s2">0</span><span class="s1">)).child(</span><span class="s4">&quot;userName&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                        <span class="s1">Ref.addValueEventListener(</span><span class="s0">new </span><span class="s1">ValueEventListener() {</span>
+                            <span class="s1">@Override</span>
+                            <span class="s0">public void </span><span class="s1">onDataChange(DataSnapshot dataSnapshot) {</span>
+                                <span class="s3">// This method is called once with the initial value and again</span>
+                                <span class="s3">// whenever data at this location is updated.</span>
+                                <span class="s1">String value = dataSnapshot.getValue().toString()</span><span class="s0">;</span>
+                                <span class="s1">ShowTags1.setText(value)</span><span class="s0">;</span>
+                                <span class="s1">ShowTags2.setText(</span><span class="s4">&quot;&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                                <span class="s1">ShowTags3.setText(</span><span class="s4">&quot;&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                            <span class="s1">}</span>
+
+                            <span class="s1">@Override</span>
+                            <span class="s0">public void </span><span class="s1">onCancelled(DatabaseError error) {</span>
+                                <span class="s3">// Failed to read value</span>
+
+                            <span class="s1">}</span>
+                        <span class="s1">})</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+                <span class="s1">}</span>
+
+                <span class="s1">bottomSheetDialog.dismiss()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+
+        <span class="s1">Ref= FirebaseDatabase.getInstance().getReference(</span><span class="s4">&quot;Users&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">Ref.addListenerForSingleValueEvent(</span><span class="s0">new </span><span class="s1">ValueEventListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onDataChange(DataSnapshot dataSnapshot) {</span>
+                <span class="s0">if </span><span class="s1">(dataSnapshot.exists()){</span>
+                    <span class="s0">for </span><span class="s1">(DataSnapshot npsnapshot : dataSnapshot.getChildren()){</span>
+                        <span class="s1">TagModel l=npsnapshot.getValue(TagModel.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+                        <span class="s1">contacts.add(l)</span><span class="s0">;</span>
+
+                    <span class="s1">}</span>
+                    <span class="s1">tagAdapter = </span><span class="s0">new </span><span class="s1">TagAdapter(contacts)</span><span class="s0">;</span>
+                    <span class="s1">recyclerView.setAdapter(tagAdapter)</span><span class="s0">;</span>
+                <span class="s1">}</span>
+            <span class="s1">}</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onCancelled(DatabaseError databaseError) {</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+        <span class="s1">userinput.addTextChangedListener(</span><span class="s0">new </span><span class="s1">TextWatcher() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">beforeTextChanged(CharSequence s</span><span class="s0">, int </span><span class="s1">start</span><span class="s0">, int </span><span class="s1">count</span><span class="s0">, int </span><span class="s1">after) {</span>
+
+            <span class="s1">}</span>
+
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onTextChanged(CharSequence s</span><span class="s0">, int </span><span class="s1">start</span><span class="s0">, int </span><span class="s1">before</span><span class="s0">, int </span><span class="s1">count) {</span>
+
+            <span class="s1">}</span>
+
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">afterTextChanged(Editable s) {</span>
+                <span class="s1">String userInput = s.toString()</span><span class="s0">;</span>
+                <span class="s1">List&lt;TagModel&gt; newContacts = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;()</span><span class="s0">;</span>
+
+                <span class="s0">for </span><span class="s1">(TagModel contacts : contacts){</span>
+                    <span class="s0">if </span><span class="s1">(contacts.getUserName().toLowerCase().contains(userInput.toLowerCase())){</span>
+                        <span class="s1">newContacts.add(contacts)</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+                <span class="s1">}</span>
+               <span class="s1">tagAdapter.filterList(newContacts)</span><span class="s0">;</span>
+
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+
+
+<span class="s3">//========************=============***************testing code ===================*****************========//</span>
+<span class="s3">//========************=============***************testing code ===================*****************========//</span>
+<span class="s3">//========************=============***************testing code ===================*****************========//</span>
+
+
+
+
+
+
+
+        <span class="s1">TagBtn.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+<span class="s3">//                bottomSheetDialog.show(getActivity().getSupportFragmentManager(),&quot;Tag&quot;);</span>
+                <span class="s1">bottomSheetDialog.show()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+
+
+
+        <span class="s1">Deletebtn = view.findViewById(R.id.deleteDoc)</span><span class="s0">;</span>
+        <span class="s1">Deletebtn.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                <span class="s1">docname.setText(</span><span class="s0">null</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">uri = </span><span class="s0">null;</span>
+                <span class="s1">doc_image.setVisibility(View.GONE)</span><span class="s0">;</span>
+                <span class="s1">Deletebtn.setVisibility(View.GONE)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+        <span class="s3">//--------------------------final post upload button click----------------------//</span>
+        <span class="s3">//--------------------------final post upload button click----------------------//</span>
+        <span class="s3">//--------------------------final post upload button click----------------------//</span>
+
+        <span class="s1">PostBtn.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                <span class="s1">Error_text.setText(</span><span class="s4">&quot;&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">validateSpinner()</span><span class="s0">;</span>
+                <span class="s1">validateHeadNText()</span><span class="s0">;</span>
+
+                <span class="s0">if </span><span class="s1">(isAllFieldChecked == </span><span class="s0">true</span><span class="s1">){</span>
+                    <span class="s0">if </span><span class="s1">(uri == </span><span class="s0">null</span><span class="s1">){</span>
+                        <span class="s1">uploadData(</span><span class="s4">&quot;none&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                    <span class="s1">}</span><span class="s0">else</span><span class="s1">{</span>
+                        <span class="s1">uploadAllDataToFirebase()</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+
+                <span class="s1">}</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+        <span class="s3">//check for tags in database present or not at Users node------------------------//</span>
+
+
+
+        <span class="s0">return </span><span class="s1">view</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+
+    <span class="s0">private void </span><span class="s1">uploadAllDataToFirebase() {</span>
+<span class="s3">//        pd.setTitle(&quot;Please Wait..&quot;);</span>
+<span class="s3">//        pd.setMessage(&quot;Uploading File&quot;);</span>
+<span class="s3">//        pd.setCanceledOnTouchOutside(false);</span>
+<span class="s3">//        pd.show();</span>
+        <span class="s1">reference = storageReference.child(</span><span class="s4">&quot;PostedFiles/&quot;</span><span class="s1">+</span><span class="s4">&quot;(&quot;</span><span class="s1">+System.currentTimeMillis()+</span><span class="s4">&quot;).&quot;</span><span class="s1">+extension)</span><span class="s0">;</span>
+
+        <span class="s1">reference.putFile(uri).addOnSuccessListener(</span><span class="s0">new </span><span class="s1">OnSuccessListener&lt;UploadTask.TaskSnapshot&gt;() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onSuccess(UploadTask.TaskSnapshot taskSnapshot) {</span>
+                <span class="s1">Task&lt;Uri&gt; uriTask = taskSnapshot.getStorage().getDownloadUrl()</span><span class="s0">;</span>
+
+                <span class="s0">while</span><span class="s1">(!uriTask.isComplete())</span><span class="s0">;</span>
+                <span class="s1">Uri data = uriTask.getResult()</span><span class="s0">;</span>
+                <span class="s1">uploadData(String.valueOf(data))</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">}).addOnFailureListener(</span><span class="s0">new </span><span class="s1">OnFailureListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onFailure(@NonNull Exception e) {</span>
+
+                <span class="s1">Toast.makeText(getContext()</span><span class="s0">, </span><span class="s1">e.getMessage()</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+    <span class="s1">}</span>
+    <span class="s0">private void </span><span class="s1">uploadData(String url) {</span>
+        <span class="s0">final </span><span class="s1">String timestamp = String.valueOf(System.currentTimeMillis())</span><span class="s0">;</span>
+<span class="s3">//        PersonTags= tagAdapter.getArrayTags();</span>
+
+        <span class="s0">if </span><span class="s1">(PersonTagsClone != </span><span class="s0">null</span><span class="s1">){</span>
+            <span class="s1">HashMap haspmap = </span><span class="s0">new </span><span class="s1">HashMap&lt;&gt;()</span><span class="s0">;</span>
+
+            <span class="s1">haspmap.put(</span><span class="s4">&quot;timeStamp&quot;</span><span class="s0">, </span><span class="s1">timestamp)</span><span class="s0">;</span>
+            <span class="s1">haspmap.put(</span><span class="s4">&quot;RelatedTo&quot;</span><span class="s0">,</span><span class="s1">RelateSpin.getSelectedItem().toString())</span><span class="s0">;</span>
+            <span class="s1">haspmap.put(</span><span class="s4">&quot;CompanyTo&quot;</span><span class="s0">,</span><span class="s1">CompanySpin.getSelectedItem().toString())</span><span class="s0">;</span>
+            <span class="s1">haspmap.put(</span><span class="s4">&quot;TextBoxData&quot;</span><span class="s0">,</span><span class="s1">Articlewritebox.getText().toString())</span><span class="s0">;</span>
+            <span class="s1">haspmap.put(</span><span class="s4">&quot;PersonTags&quot;</span><span class="s0">,</span><span class="s1">PersonTagsClone)</span><span class="s0">;</span>
+            <span class="s1">haspmap.put(</span><span class="s4">&quot;PostURL&quot;</span><span class="s0">, </span><span class="s1">url)</span><span class="s0">;</span>
+
+            <span class="s1">Ref.child(</span><span class="s4">&quot;POSTFiles&quot;</span><span class="s1">).child(CurrentUserId).setValue(haspmap).addOnCompleteListener(</span><span class="s0">new </span><span class="s1">OnCompleteListener&lt;Void&gt;() {</span>
+                <span class="s1">@Override</span>
+                <span class="s0">public void </span><span class="s1">onComplete(@NonNull Task&lt;Void&gt; task) {</span>
+<span class="s3">//                pd.dismiss();</span>
+                    <span class="s1">Toast.makeText(getContext()</span><span class="s0">, </span><span class="s4">&quot;File Uploaded Successfully.&quot;</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+                    <span class="s1">docname.setVisibility(View.GONE)</span><span class="s0">;</span>
+
+                <span class="s1">}</span>
+            <span class="s1">}).addOnFailureListener(</span><span class="s0">new </span><span class="s1">OnFailureListener() {</span>
+                <span class="s1">@Override</span>
+                <span class="s0">public void </span><span class="s1">onFailure(@NonNull Exception e) {</span>
+<span class="s3">//                pd.dismiss();</span>
+                    <span class="s1">Toast.makeText(getContext()</span><span class="s0">,  </span><span class="s1">title</span><span class="s0">, </span><span class="s1">Toast.LENGTH_LONG).show()</span><span class="s0">;</span>
+                <span class="s1">}</span>
+            <span class="s1">})</span><span class="s0">;</span>
+        <span class="s1">}</span><span class="s0">else</span><span class="s1">{</span>
+            <span class="s1">HashMap haspmap = </span><span class="s0">new </span><span class="s1">HashMap&lt;&gt;()</span><span class="s0">;</span>
+
+            <span class="s1">haspmap.put(</span><span class="s4">&quot;timeStamp&quot;</span><span class="s0">, </span><span class="s1">timestamp)</span><span class="s0">;</span>
+            <span class="s1">haspmap.put(</span><span class="s4">&quot;RelatedTo&quot;</span><span class="s0">,</span><span class="s1">RelateSpin.getSelectedItem().toString())</span><span class="s0">;</span>
+            <span class="s1">haspmap.put(</span><span class="s4">&quot;CompanyTo&quot;</span><span class="s0">,</span><span class="s1">CompanySpin.getSelectedItem().toString())</span><span class="s0">;</span>
+            <span class="s1">haspmap.put(</span><span class="s4">&quot;TextBoxData&quot;</span><span class="s0">,</span><span class="s1">Articlewritebox.getText().toString())</span><span class="s0">;</span>
+
+            <span class="s1">haspmap.put(</span><span class="s4">&quot;PostURL&quot;</span><span class="s0">, </span><span class="s1">url)</span><span class="s0">;</span>
+
+            <span class="s1">Ref.child(</span><span class="s4">&quot;POSTFiles&quot;</span><span class="s1">).child(CurrentUserId).setValue(haspmap).addOnCompleteListener(</span><span class="s0">new </span><span class="s1">OnCompleteListener&lt;Void&gt;() {</span>
+                <span class="s1">@Override</span>
+                <span class="s0">public void </span><span class="s1">onComplete(@NonNull Task&lt;Void&gt; task) {</span>
+<span class="s3">//                pd.dismiss();</span>
+                    <span class="s1">Toast.makeText(getContext()</span><span class="s0">, </span><span class="s4">&quot;File Uploaded Successfully.&quot;</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+                    <span class="s1">docname.setVisibility(View.GONE)</span><span class="s0">;</span>
+
+                <span class="s1">}</span>
+            <span class="s1">}).addOnFailureListener(</span><span class="s0">new </span><span class="s1">OnFailureListener() {</span>
+                <span class="s1">@Override</span>
+                <span class="s0">public void </span><span class="s1">onFailure(@NonNull Exception e) {</span>
+<span class="s3">//                pd.dismiss();</span>
+                    <span class="s1">Toast.makeText(getContext()</span><span class="s0">,  </span><span class="s1">title</span><span class="s0">, </span><span class="s1">Toast.LENGTH_LONG).show()</span><span class="s0">;</span>
+                <span class="s1">}</span>
+            <span class="s1">})</span><span class="s0">;</span>
+        <span class="s1">}</span>
+
+    <span class="s1">}</span>
+
+    <span class="s0">private void </span><span class="s1">validateSpinner() {</span>
+        <span class="s0">if </span><span class="s1">(CompanySpin.getSelectedItem().toString().equals(</span><span class="s4">&quot;None&quot;</span><span class="s1">) &amp;&amp; RelateSpin.getSelectedItem().toString().equals(</span><span class="s4">&quot;None&quot;</span><span class="s1">)){</span>
+            <span class="s1">Error_text.setText(</span><span class="s4">&quot;Please select at least one of above&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">}</span><span class="s0">else </span><span class="s1">{</span>
+            <span class="s1">isAllFieldChecked = </span><span class="s0">true;</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+
+    <span class="s0">private void </span><span class="s1">validateHeadNText() {</span>
+        <span class="s3">//-----------------------------Article text box-------------------------------//</span>
+        <span class="s1">article_box_Value = Articlewritebox.getText().toString()</span><span class="s0">;</span>
+        <span class="s0">if </span><span class="s1">(article_box_Value.length() == </span><span class="s2">0</span><span class="s1">){</span>
+            <span class="s1">validateDocuments()</span><span class="s0">;</span>
+        <span class="s1">}</span><span class="s0">else </span><span class="s1">{</span>
+            <span class="s1">isAllFieldChecked = </span><span class="s0">true;</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+
+    <span class="s0">private void </span><span class="s1">validateDocuments() {</span>
+        <span class="s0">if </span><span class="s1">(docname.length() == </span><span class="s2">0 </span><span class="s1">|| doc_image == </span><span class="s0">null</span><span class="s1">){</span>
+            <span class="s1">Toast.makeText(getContext()</span><span class="s0">, </span><span class="s4">&quot;Please Write text or add media&quot;</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+            <span class="s1">isAllFieldChecked = </span><span class="s0">false;</span>
+        <span class="s1">}</span><span class="s0">else</span><span class="s1">{</span>
+            <span class="s1">isAllFieldChecked = </span><span class="s0">true;</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">onActivityResult(</span><span class="s0">int </span><span class="s1">requestCode</span><span class="s0">, int </span><span class="s1">resultCode</span><span class="s0">, </span><span class="s1">Intent data) {</span>
+        <span class="s0">switch</span><span class="s1">(requestCode){</span>
+            <span class="s0">case </span><span class="s2">1</span><span class="s1">:</span>
+                <span class="s0">if </span><span class="s1">(requestCode == RESULT_LOAD_IMAGE &amp;&amp; resultCode == RESULT_OK &amp;&amp; </span><span class="s0">null </span><span class="s1">!= data) {</span>
+                    <span class="s1">uri = data.getData()</span><span class="s0">;</span>
+                    <span class="s1">doc_image = (ImageView) view.findViewById(R.id.Doc_img)</span><span class="s0">;</span>
+                    <span class="s1">doc_image.setImageURI(uri)</span><span class="s0">;</span>
+                    <span class="s1">doc_image.setVisibility(View.VISIBLE)</span><span class="s0">;</span>
+                    <span class="s1">Deletebtn.setVisibility(View.VISIBLE)</span><span class="s0">;</span>
+                    <span class="s1">String uriString = uri.toString()</span><span class="s0">;</span>
+                    <span class="s1">File myFile = </span><span class="s0">new </span><span class="s1">File(uriString)</span><span class="s0">;</span>
+                    <span class="s1">String path = myFile.getAbsolutePath()</span><span class="s0">;</span>
+                    <span class="s1">extension = path.substring(path.lastIndexOf(</span><span class="s4">&quot;.&quot;</span><span class="s1">))</span><span class="s0">;</span>
+                    <span class="s0">if </span><span class="s1">(uriString.startsWith(</span><span class="s4">&quot;content://&quot;</span><span class="s1">)) {</span>
+                        <span class="s1">Cursor cursor = </span><span class="s0">null;</span>
+                        <span class="s0">try </span><span class="s1">{</span>
+                            <span class="s1">cursor = getActivity().getApplication().getContentResolver().query(uri</span><span class="s0">, null, null, null, null</span><span class="s1">)</span><span class="s0">;</span>
+                            <span class="s0">if </span><span class="s1">(cursor != </span><span class="s0">null </span><span class="s1">&amp;&amp; cursor.moveToFirst()) {</span>
+                                <span class="s1">title = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))</span><span class="s0">;</span>
+                                <span class="s1">docname.setText(title)</span><span class="s0">;</span>
+                            <span class="s1">}</span>
+
+                        <span class="s1">} </span><span class="s0">finally </span><span class="s1">{</span>
+                            <span class="s1">cursor.close()</span><span class="s0">;</span>
+                        <span class="s1">}</span>
+                    <span class="s1">} </span><span class="s0">else if </span><span class="s1">(uriString.startsWith(</span><span class="s4">&quot;file://&quot;</span><span class="s1">)) {</span>
+
+                    <span class="s1">}</span>
+                <span class="s1">}</span>
+                <span class="s0">break;</span>
+
+            <span class="s0">case </span><span class="s2">2</span><span class="s1">:</span>
+                <span class="s0">if </span><span class="s1">(resultCode == RESULT_OK){</span>
+                    <span class="s1">uri = data.getData()</span><span class="s0">;</span>
+                    <span class="s1">doc_image = (ImageView) view.findViewById(R.id.Doc_img)</span><span class="s0">;</span>
+                    <span class="s1">doc_image.setImageResource(R.drawable.ic_baseline_video_library_24)</span><span class="s0">;</span>
+                    <span class="s1">doc_image.setVisibility(View.VISIBLE)</span><span class="s0">;</span>
+                    <span class="s1">Deletebtn.setVisibility(View.VISIBLE)</span><span class="s0">;</span>
+                    <span class="s1">docname.setText(</span><span class="s4">&quot;&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                    <span class="s1">String uriString = uri.toString()</span><span class="s0">;</span>
+                    <span class="s1">File myFile = </span><span class="s0">new </span><span class="s1">File(uriString)</span><span class="s0">;</span>
+                    <span class="s1">String path = myFile.getAbsolutePath()</span><span class="s0">;</span>
+                    <span class="s1">extension = path.substring(path.lastIndexOf(</span><span class="s4">&quot;.&quot;</span><span class="s1">))</span><span class="s0">;</span>
+                    <span class="s0">if </span><span class="s1">(uriString.startsWith(</span><span class="s4">&quot;content://&quot;</span><span class="s1">)) {</span>
+                        <span class="s1">Cursor cursor = </span><span class="s0">null;</span>
+                        <span class="s0">try </span><span class="s1">{</span>
+                            <span class="s1">cursor = getActivity().getApplication().getContentResolver().query(uri</span><span class="s0">, null, null, null, null</span><span class="s1">)</span><span class="s0">;</span>
+                            <span class="s0">if </span><span class="s1">(cursor != </span><span class="s0">null </span><span class="s1">&amp;&amp; cursor.moveToFirst()) {</span>
+                                <span class="s1">title = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))</span><span class="s0">;</span>
+                                <span class="s1">docname.setText(title)</span><span class="s0">;</span>
+                            <span class="s1">}</span>
+
+                        <span class="s1">} </span><span class="s0">finally </span><span class="s1">{</span>
+                            <span class="s1">cursor.close()</span><span class="s0">;</span>
+                        <span class="s1">}</span>
+                    <span class="s1">} </span><span class="s0">else if </span><span class="s1">(uriString.startsWith(</span><span class="s4">&quot;file://&quot;</span><span class="s1">)) {</span>
+
+                    <span class="s1">}</span>
+                <span class="s1">}</span>
+                <span class="s0">break;</span>
+            <span class="s0">case </span><span class="s2">3</span><span class="s1">:</span>
+                <span class="s0">if </span><span class="s1">(resultCode == RESULT_OK) {</span>
+                    <span class="s3">// Get the Uri of the selected file</span>
+                    <span class="s1">uri = data.getData()</span><span class="s0">;</span>
+                    <span class="s1">doc_image = (ImageView) view.findViewById(R.id.Doc_img)</span><span class="s0">;</span>
+
+                    <span class="s1">doc_image.setImageResource(R.drawable.ic_baseline_picture_as_pdf_24)</span><span class="s0">;</span>
+                    <span class="s1">doc_image.setVisibility(View.VISIBLE)</span><span class="s0">;</span>
+                    <span class="s1">Deletebtn.setVisibility(View.VISIBLE)</span><span class="s0">;</span>
+<span class="s3">//                    ViewGroup yourEmptyLayout = (ViewGroup) findViewById(R.id.Article_snap);</span>
+<span class="s3">//                    ImageView myImageView = new ImageView(this);</span>
+<span class="s3">//                    yourEmptyLayout.addView(myImageView);</span>
+<span class="s3">//                    myImageView.setImageResource(R.drawable.ic_pdf);</span>
+
+
+                    <span class="s1">String uriString = uri.toString()</span><span class="s0">;</span>
+                    <span class="s1">File myFile = </span><span class="s0">new </span><span class="s1">File(uriString)</span><span class="s0">;</span>
+                    <span class="s1">String path = myFile.getAbsolutePath()</span><span class="s0">;</span>
+                    <span class="s1">extension = path.substring(path.lastIndexOf(</span><span class="s4">&quot;.&quot;</span><span class="s1">))</span><span class="s0">;</span>
+                    <span class="s1">String displayName = </span><span class="s0">null;</span>
+                    <span class="s0">int </span><span class="s1">displaysize = </span><span class="s2">0</span><span class="s0">;</span>
+
+                    <span class="s0">if </span><span class="s1">(uriString.startsWith(</span><span class="s4">&quot;content://&quot;</span><span class="s1">)) {</span>
+                        <span class="s1">Cursor cursor = </span><span class="s0">null;</span>
+                        <span class="s0">try </span><span class="s1">{</span>
+                            <span class="s1">cursor = getActivity().getApplication().getContentResolver().query(uri</span><span class="s0">, null, null, null, null</span><span class="s1">)</span><span class="s0">;</span>
+                            <span class="s0">if </span><span class="s1">(cursor != </span><span class="s0">null </span><span class="s1">&amp;&amp; cursor.moveToFirst()) {</span>
+                                <span class="s1">displayName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))</span><span class="s0">;</span>
+                                <span class="s1">displaysize = cursor.getColumnIndex(OpenableColumns.SIZE)</span><span class="s0">;</span>
+
+                                <span class="s1">docname.setVisibility(View.VISIBLE)</span><span class="s0">;</span>
+                                <span class="s1">docname.setText(displayName)</span><span class="s0">;</span>
+                                <span class="s1">k = cursor.getLong(displaysize)</span><span class="s0">;</span>
+
+                                <span class="s1">checksize((</span><span class="s0">int</span><span class="s1">) k)</span><span class="s0">;</span>
+
+                            <span class="s1">}</span>
+
+                        <span class="s1">} </span><span class="s0">finally </span><span class="s1">{</span>
+                            <span class="s1">cursor.close()</span><span class="s0">;</span>
+                        <span class="s1">}</span>
+                    <span class="s1">} </span><span class="s0">else if </span><span class="s1">(uriString.startsWith(</span><span class="s4">&quot;file://&quot;</span><span class="s1">)) {</span>
+                        <span class="s1">Cursor cursor = </span><span class="s0">null;</span>
+                        <span class="s1">cursor = getActivity().getApplication().getContentResolver().query(uri</span><span class="s0">, null, null, null, null</span><span class="s1">)</span><span class="s0">;</span>
+                        <span class="s0">if </span><span class="s1">(cursor != </span><span class="s0">null </span><span class="s1">&amp;&amp; cursor.moveToFirst()) {</span>
+                            <span class="s1">displayName = myFile.getName()</span><span class="s0">;</span>
+                            <span class="s1">docname.setVisibility(View.VISIBLE)</span><span class="s0">;</span>
+                            <span class="s1">docname.setText(displayName)</span><span class="s0">;</span>
+                            <span class="s1">k = cursor.getLong(displaysize)</span><span class="s0">;</span>
+
+                            <span class="s1">checksize((</span><span class="s0">int</span><span class="s1">) k)</span><span class="s0">;</span>
+                        <span class="s1">}</span>
+                    <span class="s1">}</span>
+                <span class="s1">}</span>
+                <span class="s0">break;</span>
+
+        <span class="s1">}</span>
+        <span class="s0">super</span><span class="s1">.onActivityResult(requestCode</span><span class="s0">, </span><span class="s1">resultCode</span><span class="s0">, </span><span class="s1">data)</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+    <span class="s0">private void </span><span class="s1">checksize(</span><span class="s0">int </span><span class="s1">displaysize) {</span>
+        <span class="s0">long </span><span class="s1">fixsize = </span><span class="s2">3355444</span><span class="s0">;</span>
+        <span class="s0">if </span><span class="s1">(displaysize &lt; fixsize){</span>
+
+            <span class="s1">checkForUpload = </span><span class="s0">true;</span>
+            <span class="s1">Toast.makeText(getContext()</span><span class="s0">, </span><span class="s1">checkForUpload.toString()</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+        <span class="s1">}</span><span class="s0">else</span><span class="s1">{</span>
+
+            <span class="s1">docname.setText(</span><span class="s4">&quot;Please compress your file size &lt;= 3 mb&quot;</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">checkForUpload = </span><span class="s0">false;</span>
+
+
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+
+<span class="s1">}</span></pre>
+</body>
+</html>

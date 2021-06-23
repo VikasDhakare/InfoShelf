@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AllFriends.AllFriendsActivity"
+    android:background="@color/white">
+
+    <EditText
+        android:id="@+id/search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/white_round"
+        android:hint="Search Here ...."
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        android:drawableStart="@drawable/search"
+        android:drawableTint="#00FA9A"
+        android:drawablePadding="10dp"
+        android:textColorHint="#00FA9A"
+        android:textColor="#00FA9A"
+        android:inputType="textCapSentences"
+        />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/all_friends_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search"
+        />
+
+
+</RelativeLayout>

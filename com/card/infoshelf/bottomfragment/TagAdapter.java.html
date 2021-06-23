@@ -1,0 +1,151 @@
+<html>
+<head>
+<title>TagAdapter.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #808080;}
+.s3 { color: #6a8759;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+TagAdapter.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.card.infoshelf.bottomfragment</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.Context</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.SharedPreferences</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.LayoutInflater</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.View</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.ViewGroup</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.CheckBox</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.CompoundButton</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.ImageView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.LinearLayout</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.TextView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.Toast</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">androidx.annotation.NonNull</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.recyclerview.widget.RecyclerView</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">com.card.infoshelf.R</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.gson.Gson</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.gson.reflect.TypeToken</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.squareup.picasso.Picasso</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">java.lang.reflect.Type</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.ArrayList</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.List</span><span class="s0">;</span>
+<span class="s2">//</span>
+<span class="s2">//import static android.content.Context.MODE_PRIVATE;</span>
+<span class="s2">//import static com.card.infoshelf.bottomfragment.AddTimeline.BottomSheetDialog.SHARED_PREFS;</span>
+<span class="s2">//import static com.card.infoshelf.bottomfragment.AddTimeline.BottomSheetDialog.TEXT;</span>
+
+<span class="s0">public class </span><span class="s1">TagAdapter </span><span class="s0">extends </span><span class="s1">RecyclerView.Adapter&lt;TagAdapter.MyViewHolder&gt;{</span>
+    <span class="s0">private </span><span class="s1">Context context</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">List&lt;TagModel&gt; tagPersonList</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">List&lt;String&gt; CheckBoxTags = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;()</span><span class="s0">;</span>
+    <span class="s0">public static  final </span><span class="s1">String SHARED_PREFS = </span><span class="s3">&quot;sharedPrefs&quot;</span><span class="s0">;</span>
+    <span class="s0">public static  final </span><span class="s1">String TEXT = </span><span class="s3">&quot;text&quot;</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">List&lt;String&gt; SharedList = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;()</span><span class="s0">;</span>
+
+
+    <span class="s0">public </span><span class="s1">List&lt;String&gt; getArrayTags(){</span>
+
+        <span class="s0">return </span><span class="s1">CheckBoxTags</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+
+
+
+    <span class="s0">public </span><span class="s1">TagAdapter(List&lt;TagModel&gt; tagPersonList) {</span>
+        <span class="s0">this</span><span class="s1">.context = context</span><span class="s0">;</span>
+        <span class="s0">this</span><span class="s1">.tagPersonList = tagPersonList</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+    <span class="s2">//    public TagAdapter(Context context, List&lt;TagModel&gt; tagPersonList) {</span>
+<span class="s2">//        this.context = context;</span>
+<span class="s2">//        this.tagPersonList = tagPersonList;</span>
+<span class="s2">//        chipInterface = (ChipInterface) context;</span>
+<span class="s2">//    }</span>
+
+    <span class="s1">@NonNull</span>
+    <span class="s1">@Override</span>
+    <span class="s0">public </span><span class="s1">TagAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent</span><span class="s0">, int </span><span class="s1">viewType) {</span>
+        <span class="s1">View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_view</span><span class="s0">,</span><span class="s1">parent</span><span class="s0">,false</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s0">return new </span><span class="s1">MyViewHolder(view)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">onBindViewHolder(@NonNull TagAdapter.MyViewHolder holder</span><span class="s0">, int </span><span class="s1">position) {</span>
+        <span class="s1">TagModel tagModel = tagPersonList.get(position)</span><span class="s0">;</span>
+        <span class="s1">holder.PersonName.setText(tagModel.getUserName())</span><span class="s0">;</span>
+        <span class="s1">String imageUri = tagModel.getProfile_image()</span><span class="s0">;</span>
+        <span class="s1">Picasso.get().load(imageUri).into(holder.personimg)</span><span class="s0">;</span>
+        <span class="s0">if </span><span class="s1">(tagModel.isChecker() == </span><span class="s0">true</span><span class="s1">){</span>
+            <span class="s1">holder.checkBox.setChecked(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">}</span>
+        <span class="s1">holder.userId.setText(tagModel.getUserId())</span><span class="s0">;</span>
+        <span class="s1">String TagiId = tagModel.getUserId()</span><span class="s0">;</span>
+        <span class="s1">holder.checkBox.setOnCheckedChangeListener(</span><span class="s0">null</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">holder.checkBox.setSelected(tagModel.isHold())</span><span class="s0">;</span>
+
+        <span class="s1">holder.checkBox.setOnCheckedChangeListener(</span><span class="s0">new </span><span class="s1">CompoundButton.OnCheckedChangeListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onCheckedChanged(CompoundButton buttonView</span><span class="s0">, boolean </span><span class="s1">isChecked) {</span>
+                <span class="s0">if </span><span class="s1">(isChecked){</span>
+                    <span class="s1">tagModel.setHold(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+                    <span class="s1">CheckBoxTags.add(tagModel.getUserId())</span><span class="s0">;</span>
+                    <span class="s1">tagModel.setChecker(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">}</span><span class="s0">else </span><span class="s1">{</span>
+                    <span class="s1">CheckBoxTags.remove(tagModel.getUserId())</span><span class="s0">;</span>
+                    <span class="s1">tagModel.setHold(</span><span class="s0">false</span><span class="s1">)</span><span class="s0">;</span>
+                    <span class="s1">tagModel.setChecker(</span><span class="s0">false</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">}</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+
+    <span class="s1">@Override</span>
+    <span class="s0">public int </span><span class="s1">getItemCount() {</span>
+        <span class="s0">return </span><span class="s1">tagPersonList.size()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">filterList(List&lt;TagModel&gt; newContacts) {</span>
+        <span class="s1">tagPersonList = newContacts</span><span class="s0">;</span>
+        <span class="s1">notifyDataSetChanged()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public class </span><span class="s1">MyViewHolder </span><span class="s0">extends </span><span class="s1">RecyclerView.ViewHolder {</span>
+        <span class="s1">TextView PersonName</span><span class="s0">,</span><span class="s1">userId</span><span class="s0">;</span>
+        <span class="s1">LinearLayout rootView</span><span class="s0">;</span>
+        <span class="s1">CheckBox checkBox</span><span class="s0">;</span>
+        <span class="s1">ImageView personimg</span><span class="s0">;</span>
+        <span class="s0">public </span><span class="s1">MyViewHolder(@NonNull View itemView) {</span>
+            <span class="s0">super</span><span class="s1">(itemView)</span><span class="s0">;</span>
+            <span class="s1">PersonName = itemView.findViewById(R.id.personnameTag)</span><span class="s0">;</span>
+            <span class="s1">rootView = itemView.findViewById(R.id.rootView)</span><span class="s0">;</span>
+            <span class="s1">checkBox = itemView.findViewById(R.id.Tagcheckbox)</span><span class="s0">;</span>
+            <span class="s1">userId = itemView.findViewById(R.id.UserId)</span><span class="s0">;</span>
+            <span class="s1">personimg = itemView.findViewById(R.id.PersonImage)</span><span class="s0">;</span>
+        <span class="s1">}</span>
+
+
+    <span class="s1">}</span>
+
+
+<span class="s2">//    public void updateList(List&lt;TagModel&gt; newContacts){</span>
+<span class="s2">//        tagPersonList.clear();</span>
+<span class="s2">//        tagPersonList.addAll(newContacts);</span>
+<span class="s2">//        notifyDataSetChanged();</span>
+<span class="s2">//    }</span>
+<span class="s1">}</span>
+</pre>
+</body>
+</html>

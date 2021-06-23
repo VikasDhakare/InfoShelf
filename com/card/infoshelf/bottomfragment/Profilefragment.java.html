@@ -1,0 +1,513 @@
+<html>
+<head>
+<title>Profilefragment.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6897bb;}
+.s3 { color: #6a8759;}
+.s4 { color: #808080;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Profilefragment.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.card.infoshelf.bottomfragment</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.Manifest</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.app.Dialog</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.app.ProgressDialog</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.Intent</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.database.Cursor</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.graphics.Bitmap</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.graphics.Color</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.graphics.drawable.ColorDrawable</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.net.Uri</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.os.Bundle</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">androidx.annotation.NonNull</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.annotation.Nullable</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.fragment.app.Fragment</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.viewpager.widget.ViewPager</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.provider.MediaStore</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.LayoutInflater</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.View</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.ViewGroup</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.ImageView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.LinearLayout</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.TextView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.Toast</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">com.card.infoshelf.Friends.FriendsActivity</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.card.infoshelf.R</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.card.infoshelf.Requests.RequestsActivity</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.card.infoshelf.myProfileTabaccessAdaptor</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.card.infoshelf.userProfileActivity</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.tasks.OnCompleteListener</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.tasks.Task</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.android.material.bottomsheet.BottomSheetDialog</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.android.material.tabs.TabLayout</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.auth.FirebaseAuth</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.database.DataSnapshot</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.database.DatabaseError</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.database.DatabaseReference</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.database.FirebaseDatabase</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.database.ValueEventListener</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.storage.FirebaseStorage</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.storage.StorageReference</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.storage.UploadTask</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.iceteck.silicompressorr.FileUtils</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.iceteck.silicompressorr.SiliCompressor</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.squareup.picasso.Picasso</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.theartofdev.edmodo.cropper.CropImage</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.theartofdev.edmodo.cropper.CropImageView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.yalantis.ucrop.UCrop</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">java.io.File</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.io.IOException</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">de.hdodenhof.circleimageview.CircleImageView</span><span class="s0">;</span>
+
+<span class="s0">import static </span><span class="s1">android.app.Activity.RESULT_OK</span><span class="s0">;</span>
+
+<span class="s0">public class </span><span class="s1">Profilefragment </span><span class="s0">extends </span><span class="s1">Fragment {</span>
+
+    <span class="s0">private </span><span class="s1">TextView userName</span><span class="s0">, </span><span class="s1">userinfo</span><span class="s0">, </span><span class="s1">viewProfile</span><span class="s0">, </span><span class="s1">uploadprofile </span><span class="s0">, </span><span class="s1">f_count </span><span class="s0">, </span><span class="s1">r_count</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">LinearLayout network </span><span class="s0">, </span><span class="s1">requests</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">String userid</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">ImageView coverPic</span><span class="s0">, </span><span class="s1">dialogImage</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">CircleImageView userProfile</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">BottomSheetDialog bottomSheetDialog</span><span class="s0">;</span>
+    <span class="s1">ProgressDialog pd</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">StorageReference UserProfileImageRef</span><span class="s0">, </span><span class="s1">uploadCoverPic</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">DatabaseReference databaseReference </span><span class="s0">, </span><span class="s1">Ref</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">FirebaseAuth mAuth</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">String CurrentUserId</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">Dialog mDialog</span><span class="s0">;</span>
+
+    <span class="s1">String cameraPermission[]</span><span class="s0">;</span>
+    <span class="s1">String storagePermission[]</span><span class="s0">;</span>
+    <span class="s0">private boolean </span><span class="s1">coverPicIsClicked = </span><span class="s0">false;</span>
+    <span class="s0">private boolean </span><span class="s1">profilePicIsClicked = </span><span class="s0">false;</span>
+
+    <span class="s0">private final int </span><span class="s1">CODE_IMG_GALLERY = </span><span class="s2">1</span><span class="s0">;</span>
+    <span class="s0">private final </span><span class="s1">String SAMPLE_CROPPED_IMG_NAME = </span><span class="s3">&quot;SampleImage&quot;</span><span class="s0">;</span>
+
+    <span class="s0">private </span><span class="s1">ViewPager myViewPager</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">TabLayout myTabLayout</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">myProfileTabaccessAdaptor tabaccessAdaptor</span><span class="s0">;</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public </span><span class="s1">View onCreateView(LayoutInflater inflater</span><span class="s0">, </span><span class="s1">ViewGroup container</span><span class="s0">,</span>
+                             <span class="s1">Bundle savedInstanceState) {</span>
+        <span class="s4">// Inflate the layout for this fragment</span>
+        <span class="s1">View root = inflater.inflate(R.layout.fragment_profilefragment</span><span class="s0">, </span><span class="s1">container</span><span class="s0">, false</span><span class="s1">)</span><span class="s0">;</span>
+
+        <span class="s1">userinfo = root.findViewById(R.id.userinfo)</span><span class="s0">;</span>
+        <span class="s1">userName = root.findViewById(R.id.userName)</span><span class="s0">;</span>
+        <span class="s1">coverPic = root.findViewById(R.id.coverPic)</span><span class="s0">;</span>
+        <span class="s1">userProfile = root.findViewById(R.id.userProfile)</span><span class="s0">;</span>
+        <span class="s1">network = root.findViewById(R.id.network)</span><span class="s0">;</span>
+        <span class="s1">f_count = root.findViewById(R.id.f_count)</span><span class="s0">;</span>
+        <span class="s1">requests = root.findViewById(R.id.requests)</span><span class="s0">;</span>
+        <span class="s1">r_count = root.findViewById(R.id.r_count)</span><span class="s0">;</span>
+        <span class="s1">pd = </span><span class="s0">new </span><span class="s1">ProgressDialog(getActivity())</span><span class="s0">;</span>
+
+
+        <span class="s1">cameraPermission = </span><span class="s0">new </span><span class="s1">String[] {Manifest.permission.CAMERA</span><span class="s0">, </span><span class="s1">Manifest.permission.WRITE_EXTERNAL_STORAGE}</span><span class="s0">;</span>
+        <span class="s1">storagePermission = </span><span class="s0">new </span><span class="s1">String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}</span><span class="s0">;</span>
+
+        <span class="s1">mAuth = FirebaseAuth.getInstance()</span><span class="s0">;</span>
+        <span class="s1">CurrentUserId = mAuth.getCurrentUser().getUid()</span><span class="s0">;</span>
+
+        <span class="s1">UserProfileImageRef = FirebaseStorage.getInstance().getReference().child(</span><span class="s3">&quot;Profile_Images&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">uploadCoverPic = FirebaseStorage.getInstance().getReference().child(</span><span class="s3">&quot;Cover_pic&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">databaseReference = FirebaseDatabase.getInstance().getReference(</span><span class="s3">&quot;Users&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">Ref = FirebaseDatabase.getInstance().getReference(</span><span class="s3">&quot;Friends&quot;</span><span class="s1">)</span><span class="s0">;</span>
+
+        <span class="s1">mDialog = </span><span class="s0">new </span><span class="s1">Dialog(getActivity())</span><span class="s0">;</span>
+        <span class="s1">mDialog.setContentView(R.layout.show_profile_cover_dialog)</span><span class="s0">;</span>
+        <span class="s1">mDialog.getWindow().setBackgroundDrawable(</span><span class="s0">new </span><span class="s1">ColorDrawable(Color.TRANSPARENT))</span><span class="s0">;</span>
+
+        <span class="s1">dialogImage = mDialog.findViewById(R.id.dialog_image)</span><span class="s0">;</span>
+
+
+        <span class="s1">myViewPager = root.findViewById(R.id.my_profile_pager)</span><span class="s0">;</span>
+        <span class="s1">tabaccessAdaptor = </span><span class="s0">new </span><span class="s1">myProfileTabaccessAdaptor(getActivity().getSupportFragmentManager())</span><span class="s0">;</span>
+        <span class="s1">myViewPager.setAdapter(tabaccessAdaptor)</span><span class="s0">;</span>
+
+        <span class="s1">myTabLayout = root.findViewById(R.id.my_profile_tabs)</span><span class="s0">;</span>
+        <span class="s1">myTabLayout.setupWithViewPager(myViewPager)</span><span class="s0">;</span>
+
+        <span class="s1">myTabLayout.getTabAt(</span><span class="s2">0</span><span class="s1">).setIcon(R.drawable.ic_baseline_picture_in_picture_24)</span><span class="s0">;</span>
+        <span class="s1">myTabLayout.getTabAt(</span><span class="s2">1</span><span class="s1">).setIcon(R.drawable.video)</span><span class="s0">;</span>
+        <span class="s1">myTabLayout.getTabAt(</span><span class="s2">2</span><span class="s1">).setIcon(R.drawable.document)</span><span class="s0">;</span>
+        <span class="s1">myTabLayout.getTabAt(</span><span class="s2">3</span><span class="s1">).setIcon(R.drawable.about)</span><span class="s0">;</span>
+
+
+        <span class="s1">bottomSheetDialog = </span><span class="s0">new </span><span class="s1">BottomSheetDialog(getActivity()</span><span class="s0">, </span><span class="s1">R.style.BottomSheetStyle)</span><span class="s0">;</span>
+
+        <span class="s1">View view = LayoutInflater.from(getActivity()).inflate(R.layout.bottomsheet_dialog</span><span class="s0">, </span><span class="s1">(LinearLayout)root.findViewById(R.id.sheet))</span><span class="s0">;</span>
+
+        <span class="s1">bottomSheetDialog.setContentView(view)</span><span class="s0">;</span>
+
+        <span class="s1">viewProfile = bottomSheetDialog.findViewById(R.id.viewProfile)</span><span class="s0">;</span>
+        <span class="s1">uploadprofile = bottomSheetDialog.findViewById(R.id.uploadProfile)</span><span class="s0">;</span>
+        <span class="s1">TextView titleProfile = bottomSheetDialog.findViewById(R.id.titleProfile)</span><span class="s0">;</span>
+
+        <span class="s1">Ref.child(CurrentUserId).addValueEventListener(</span><span class="s0">new </span><span class="s1">ValueEventListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onDataChange(@NonNull DataSnapshot snapshot) {</span>
+                <span class="s0">if </span><span class="s1">(snapshot.exists())</span>
+                <span class="s1">{</span>
+                    <span class="s0">int </span><span class="s1">count = (</span><span class="s0">int</span><span class="s1">) snapshot.getChildrenCount()</span><span class="s0">;</span>
+                    <span class="s1">f_count.setText(</span><span class="s3">&quot;&quot;</span><span class="s1">+count)</span><span class="s0">;</span>
+                <span class="s1">}</span>
+            <span class="s1">}</span>
+
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onCancelled(@NonNull DatabaseError error) {</span>
+
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+       <span class="s1">requests.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+           <span class="s1">@Override</span>
+           <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+               <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(getContext() </span><span class="s0">, </span><span class="s1">RequestsActivity.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+               <span class="s1">startActivity(intent)</span><span class="s0">;</span>
+           <span class="s1">}</span>
+       <span class="s1">})</span><span class="s0">;</span>
+
+
+        <span class="s1">coverPic.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+
+                <span class="s1">profilePicIsClicked = </span><span class="s0">false;</span>
+
+                <span class="s1">titleProfile.setText(</span><span class="s3">&quot;Cover Photo&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">viewProfile.setText(</span><span class="s3">&quot;View Cover Photo&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">uploadprofile.setText(</span><span class="s3">&quot;Upload Cover Photo&quot;</span><span class="s1">)</span><span class="s0">;</span>
+
+                <span class="s1">viewProfile.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+                    <span class="s1">@Override</span>
+                    <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                        <span class="s1">openImage(</span><span class="s3">&quot;cover&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                        <span class="s1">Toast.makeText(getActivity()</span><span class="s0">, </span><span class="s3">&quot;Cover Photo&quot;</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+                <span class="s1">})</span><span class="s0">;</span>
+
+
+                <span class="s1">uploadprofile.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+                    <span class="s1">@Override</span>
+                    <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+
+                        <span class="s1">coverPicIsClicked = </span><span class="s0">true;</span>
+                        <span class="s1">starCrop()</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+                <span class="s1">})</span><span class="s0">;</span>
+
+                <span class="s1">bottomSheetDialog.show()</span><span class="s0">;</span>
+
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+        <span class="s1">userProfile.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                <span class="s1">coverPicIsClicked = </span><span class="s0">false;</span>
+
+                <span class="s1">titleProfile.setText(</span><span class="s3">&quot;Profile Photo&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">viewProfile.setText(</span><span class="s3">&quot;View Profile Photo&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">uploadprofile.setText(</span><span class="s3">&quot;Upload Profile Photo&quot;</span><span class="s1">)</span><span class="s0">;</span>
+
+
+                <span class="s1">viewProfile.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+                    <span class="s1">@Override</span>
+                    <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                        <span class="s1">openImage(</span><span class="s3">&quot;profile&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                        <span class="s1">Toast.makeText(getActivity()</span><span class="s0">, </span><span class="s3">&quot;profile Photo&quot;</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+                <span class="s1">})</span><span class="s0">;</span>
+
+                <span class="s1">uploadprofile.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+                    <span class="s1">@Override</span>
+                    <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+
+                        <span class="s1">profilePicIsClicked = </span><span class="s0">true;</span>
+                       <span class="s1">starCrop()</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+                <span class="s1">})</span><span class="s0">;</span>
+
+                <span class="s1">bottomSheetDialog.show()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+        <span class="s1">network.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(getContext() </span><span class="s0">, </span><span class="s1">FriendsActivity.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">intent.putExtra(</span><span class="s3">&quot;userid&quot; </span><span class="s0">, </span><span class="s1">CurrentUserId)</span><span class="s0">;</span>
+                <span class="s1">startActivity(intent)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+
+        <span class="s1">getUserInfo()</span><span class="s0">;</span>
+
+        <span class="s0">return </span><span class="s1">root</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">private void </span><span class="s1">openImage(String cover) {</span>
+        <span class="s1">DatabaseReference userNameRef = FirebaseDatabase.getInstance().getReference(</span><span class="s3">&quot;Users&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">userNameRef.child(CurrentUserId).addValueEventListener(</span><span class="s0">new </span><span class="s1">ValueEventListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onDataChange(@NonNull DataSnapshot snapshot) {</span>
+
+                <span class="s0">if </span><span class="s1">(cover.equals(</span><span class="s3">&quot;cover&quot;</span><span class="s1">)){</span>
+                    <span class="s4">//                for cover pic</span>
+                    <span class="s0">if </span><span class="s1">(snapshot.child(</span><span class="s3">&quot;cover_pic&quot;</span><span class="s1">).exists()){</span>
+                        <span class="s1">String user_cover = snapshot.child(</span><span class="s3">&quot;cover_pic&quot;</span><span class="s1">).getValue().toString()</span><span class="s0">;</span>
+                        <span class="s1">Picasso.get().load(user_cover).into(dialogImage)</span><span class="s0">;</span>
+                        <span class="s1">mDialog.show()</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+                <span class="s1">}</span>
+                <span class="s0">if </span><span class="s1">(cover.equals(</span><span class="s3">&quot;profile&quot;</span><span class="s1">)){</span>
+                    <span class="s0">if </span><span class="s1">(snapshot.child(</span><span class="s3">&quot;profile_image&quot;</span><span class="s1">).exists()){</span>
+                        <span class="s1">String user_Profile = snapshot.child(</span><span class="s3">&quot;profile_image&quot;</span><span class="s1">).getValue().toString()</span><span class="s0">;</span>
+                        <span class="s1">Picasso.get().load(user_Profile).into(dialogImage)</span><span class="s0">;</span>
+                        <span class="s1">mDialog.show()</span><span class="s0">;</span>
+
+                    <span class="s1">}</span>
+                <span class="s1">}</span>
+
+            <span class="s1">}</span>
+
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onCancelled(@NonNull DatabaseError error) {</span>
+
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">private void </span><span class="s1">starCrop() {</span>
+
+        <span class="s1">CropImage.activity()</span>
+                <span class="s1">.setGuidelines(CropImageView.Guidelines.ON)</span>
+                <span class="s1">.setActivityTitle(</span><span class="s3">&quot;Crop Image&quot;</span><span class="s1">)</span>
+                <span class="s1">.setOutputCompressQuality(</span><span class="s2">100</span><span class="s1">)</span>
+                <span class="s1">.start(getContext()</span><span class="s0">, this</span><span class="s1">)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">onActivityResult(</span><span class="s0">int </span><span class="s1">requestCode</span><span class="s0">, int </span><span class="s1">resultCode</span><span class="s0">, </span><span class="s1">@Nullable Intent data) {</span>
+        <span class="s0">super</span><span class="s1">.onActivityResult(requestCode</span><span class="s0">, </span><span class="s1">resultCode</span><span class="s0">, </span><span class="s1">data)</span><span class="s0">;</span>
+        <span class="s0">if </span><span class="s1">(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {</span>
+            <span class="s1">CropImage.ActivityResult result = CropImage.getActivityResult(data)</span><span class="s0">;</span>
+            <span class="s0">if </span><span class="s1">(resultCode == RESULT_OK) {</span>
+                <span class="s1">Uri resultUri = result.getUri()</span><span class="s0">;</span>
+
+                <span class="s0">final </span><span class="s1">File file = </span><span class="s0">new </span><span class="s1">File(SiliCompressor.with(getActivity()).compress(FileUtils.getPath(getActivity()</span><span class="s0">, </span><span class="s1">resultUri)</span><span class="s0">, new </span><span class="s1">File(getActivity().getCacheDir()</span><span class="s0">, </span><span class="s3">&quot;temp&quot;</span><span class="s1">)))</span><span class="s0">;</span>
+                <span class="s1">Uri outputUri = Uri.fromFile(file)</span><span class="s0">;</span>
+
+                <span class="s0">if </span><span class="s1">(profilePicIsClicked == </span><span class="s0">true</span><span class="s1">){</span>
+                    <span class="s1">userProfile.setImageURI(outputUri)</span><span class="s0">;</span>
+
+                    <span class="s1">uploadProfileImage(outputUri</span><span class="s0">, </span><span class="s3">&quot;Profile Pic&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">}</span>
+                <span class="s0">if </span><span class="s1">(coverPicIsClicked == </span><span class="s0">true</span><span class="s1">){</span>
+                    <span class="s1">coverPic.setImageURI(outputUri)</span><span class="s0">;</span>
+                    <span class="s1">uploadCoverImage(outputUri</span><span class="s0">, </span><span class="s3">&quot;Cover Pic&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">}</span>
+
+            <span class="s1">} </span><span class="s0">else if </span><span class="s1">(resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {</span>
+                <span class="s1">Exception error = result.getError()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+
+    <span class="s0">private void </span><span class="s1">uploadCoverImage(Uri resultUri</span><span class="s0">, </span><span class="s1">String cover_pic) {</span>
+
+
+        <span class="s1">pd.setTitle(</span><span class="s3">&quot;Uploading Image&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">pd.setMessage(</span><span class="s3">&quot;Please Wait&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">pd.setCanceledOnTouchOutside(</span><span class="s0">false</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">pd.show()</span><span class="s0">;</span>
+
+        <span class="s0">final </span><span class="s1">StorageReference filepath = uploadCoverPic.child(CurrentUserId + </span><span class="s3">&quot;.jpg&quot;</span><span class="s1">)</span><span class="s0">;</span>
+
+        <span class="s1">filepath.putFile(resultUri).addOnCompleteListener(</span><span class="s0">new </span><span class="s1">OnCompleteListener&lt;UploadTask.TaskSnapshot&gt;() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onComplete(@NonNull Task&lt;UploadTask.TaskSnapshot&gt; task) {</span>
+                <span class="s0">if</span><span class="s1">(task.isSuccessful())</span>
+                <span class="s1">{</span>
+                    <span class="s1">filepath.getDownloadUrl().addOnCompleteListener(</span><span class="s0">new </span><span class="s1">OnCompleteListener&lt;Uri&gt;() {</span>
+                        <span class="s1">@Override</span>
+                        <span class="s0">public void </span><span class="s1">onComplete(@NonNull Task&lt;Uri&gt; task) {</span>
+                            <span class="s1">String uri = task.getResult().toString()</span><span class="s0">;</span>
+
+                                    <span class="s1">databaseReference.child(CurrentUserId).child(</span><span class="s3">&quot;cover_pic&quot;</span><span class="s1">).setValue(uri).addOnCompleteListener(</span><span class="s0">new </span><span class="s1">OnCompleteListener&lt;Void&gt;() {</span>
+                                        <span class="s1">@Override</span>
+                                        <span class="s0">public void </span><span class="s1">onComplete(@NonNull Task&lt;Void&gt; task) {</span>
+                                            <span class="s0">if </span><span class="s1">(task.isSuccessful())</span>
+                                            <span class="s1">{</span>
+                                                <span class="s1">Toast.makeText(getActivity()</span><span class="s0">, </span><span class="s3">&quot;Upload &quot;</span><span class="s1">+cover_pic</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+                                                <span class="s1">pd.dismiss()</span><span class="s0">;</span>
+                                            <span class="s1">}</span>
+                                            <span class="s0">else</span>
+                                            <span class="s1">{</span>
+                                                <span class="s1">Toast.makeText(getActivity()</span><span class="s0">, </span><span class="s3">&quot;Error : &quot;</span><span class="s1">+ task.getException()</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+                                                <span class="s1">pd.dismiss()</span><span class="s0">;</span>
+                                            <span class="s1">}</span>
+                                        <span class="s1">}</span>
+                                    <span class="s1">})</span><span class="s0">;</span>
+                        <span class="s1">}</span>
+                    <span class="s1">})</span><span class="s0">;</span>
+
+                <span class="s1">}</span>
+                <span class="s0">else</span>
+                <span class="s1">{</span>
+
+                    <span class="s1">pd.dismiss()</span><span class="s0">;</span>
+                    <span class="s1">String msg = task.getException().toString()</span><span class="s0">;</span>
+
+                    <span class="s1">Toast.makeText(getActivity()</span><span class="s0">, </span><span class="s3">&quot;Error : &quot; </span><span class="s1">+ msg</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+                <span class="s1">}</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">private void </span><span class="s1">uploadProfileImage(Uri resultUri</span><span class="s0">, </span><span class="s1">String type) {</span>
+
+        <span class="s1">pd.setTitle(</span><span class="s3">&quot;Uploading Image&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">pd.setMessage(</span><span class="s3">&quot;Please Wait&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">pd.setCanceledOnTouchOutside(</span><span class="s0">false</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">pd.show()</span><span class="s0">;</span>
+
+        <span class="s0">final </span><span class="s1">StorageReference filepath = UserProfileImageRef.child(CurrentUserId + </span><span class="s3">&quot;.jpg&quot;</span><span class="s1">)</span><span class="s0">;</span>
+
+        <span class="s1">filepath.putFile(resultUri).addOnCompleteListener(</span><span class="s0">new </span><span class="s1">OnCompleteListener&lt;UploadTask.TaskSnapshot&gt;() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onComplete(@NonNull Task&lt;UploadTask.TaskSnapshot&gt; task) {</span>
+                <span class="s0">if</span><span class="s1">(task.isSuccessful())</span>
+                <span class="s1">{</span>
+
+                    <span class="s1">filepath.getDownloadUrl().addOnCompleteListener(</span><span class="s0">new </span><span class="s1">OnCompleteListener&lt;Uri&gt;() {</span>
+                        <span class="s1">@Override</span>
+                        <span class="s0">public void </span><span class="s1">onComplete(@NonNull Task&lt;Uri&gt; task) {</span>
+                            <span class="s1">String uri = task.getResult().toString()</span><span class="s0">;</span>
+
+                                    <span class="s1">databaseReference.child(CurrentUserId).child(</span><span class="s3">&quot;profile_image&quot;</span><span class="s1">).setValue(uri).addOnCompleteListener(</span><span class="s0">new </span><span class="s1">OnCompleteListener&lt;Void&gt;() {</span>
+                                        <span class="s1">@Override</span>
+                                        <span class="s0">public void </span><span class="s1">onComplete(@NonNull Task&lt;Void&gt; task) {</span>
+
+                                            <span class="s0">if </span><span class="s1">(task.isSuccessful())</span>
+                                            <span class="s1">{</span>
+                                                <span class="s1">Toast.makeText(getActivity()</span><span class="s0">, </span><span class="s3">&quot;Upload &quot;</span><span class="s1">+type</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+                                                <span class="s1">pd.dismiss()</span><span class="s0">;</span>
+
+                                            <span class="s1">}</span>
+                                            <span class="s0">else</span>
+                                            <span class="s1">{</span>
+                                                <span class="s1">Toast.makeText(getActivity()</span><span class="s0">, </span><span class="s3">&quot;Error : &quot;</span><span class="s1">+ task.getException()</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+                                                <span class="s1">pd.dismiss()</span><span class="s0">;</span>
+                                            <span class="s1">}</span>
+                                        <span class="s1">}</span>
+                                    <span class="s1">})</span><span class="s0">;</span>
+                        <span class="s1">}</span>
+                    <span class="s1">})</span><span class="s0">;</span>
+
+                <span class="s1">}</span>
+                <span class="s0">else</span>
+                <span class="s1">{</span>
+
+                    <span class="s1">pd.dismiss()</span><span class="s0">;</span>
+                    <span class="s1">String msg = task.getException().toString()</span><span class="s0">;</span>
+
+                    <span class="s1">Toast.makeText(getActivity()</span><span class="s0">, </span><span class="s3">&quot;Error : &quot; </span><span class="s1">+ msg</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+                <span class="s1">}</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">private void </span><span class="s1">getUserInfo() {</span>
+
+        <span class="s1">DatabaseReference infoREf = FirebaseDatabase.getInstance().getReference(</span><span class="s3">&quot;UserDetails&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">infoREf.child(CurrentUserId).addValueEventListener(</span><span class="s0">new </span><span class="s1">ValueEventListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onDataChange(@NonNull DataSnapshot snapshot) {</span>
+                <span class="s1">String profession = snapshot.child(</span><span class="s3">&quot;profession&quot;</span><span class="s1">).getValue().toString()</span><span class="s0">;</span>
+
+                <span class="s0">if </span><span class="s1">(profession.equals(</span><span class="s3">&quot;Schooling&quot;</span><span class="s1">)){</span>
+                    <span class="s1">String school_name = snapshot.child(</span><span class="s3">&quot;school_name&quot;</span><span class="s1">).getValue().toString()</span><span class="s0">;</span>
+                    <span class="s1">userinfo.setText(profession+</span><span class="s3">&quot; at &quot;</span><span class="s1">+ school_name)</span><span class="s0">;</span>
+                    <span class="s1">getUserName(CurrentUserId)</span><span class="s0">;</span>
+
+                <span class="s1">}</span>
+                <span class="s0">if </span><span class="s1">(profession.equals(</span><span class="s3">&quot;Graduation&quot;</span><span class="s1">)){</span>
+                    <span class="s1">String college_name = snapshot.child(</span><span class="s3">&quot;college_name&quot;</span><span class="s1">).getValue().toString()</span><span class="s0">;</span>
+                    <span class="s1">String course = snapshot.child(</span><span class="s3">&quot;course&quot;</span><span class="s1">).getValue().toString()</span><span class="s0">;</span>
+
+                    <span class="s1">userinfo.setText(course+</span><span class="s3">&quot; at &quot;</span><span class="s1">+ college_name)</span><span class="s0">;</span>
+                    <span class="s1">getUserName(CurrentUserId)</span><span class="s0">;</span>
+                <span class="s1">}</span>
+                <span class="s0">if </span><span class="s1">(profession.equals(</span><span class="s3">&quot;Job&quot;</span><span class="s1">)){</span>
+                    <span class="s1">String job_role = snapshot.child(</span><span class="s3">&quot;job_role&quot;</span><span class="s1">).getValue().toString()</span><span class="s0">;</span>
+                    <span class="s1">userinfo.setText(job_role)</span><span class="s0">;</span>
+                    <span class="s1">getUserName(CurrentUserId)</span><span class="s0">;</span>
+                <span class="s1">}</span>
+            <span class="s1">}</span>
+
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onCancelled(@NonNull DatabaseError error) {</span>
+
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+
+    <span class="s0">public void </span><span class="s1">getUserName(String userId) {</span>
+
+        <span class="s1">DatabaseReference userNameRef = FirebaseDatabase.getInstance().getReference(</span><span class="s3">&quot;Users&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">userNameRef.child(userId).addValueEventListener(</span><span class="s0">new </span><span class="s1">ValueEventListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onDataChange(@NonNull DataSnapshot snapshot) {</span>
+                <span class="s1">String user_name = snapshot.child(</span><span class="s3">&quot;userName&quot;</span><span class="s1">).getValue().toString()</span><span class="s0">;</span>
+                <span class="s1">userName.setText(user_name)</span><span class="s0">;</span>
+
+<span class="s4">//                for profile pic</span>
+
+                <span class="s0">if </span><span class="s1">(snapshot.child(</span><span class="s3">&quot;profile_image&quot;</span><span class="s1">).exists()){</span>
+                    <span class="s1">String user_Profile = snapshot.child(</span><span class="s3">&quot;profile_image&quot;</span><span class="s1">).getValue().toString()</span><span class="s0">;</span>
+                    <span class="s1">Picasso.get().load(user_Profile).into(userProfile)</span><span class="s0">;</span>
+                <span class="s1">}</span>
+                <span class="s0">else </span><span class="s1">{</span>
+                    <span class="s1">Picasso.get().load(R.drawable.profile).into(userProfile)</span><span class="s0">;</span>
+                <span class="s1">}</span>
+
+<span class="s4">//                for cover pic</span>
+                <span class="s0">if </span><span class="s1">(snapshot.child(</span><span class="s3">&quot;cover_pic&quot;</span><span class="s1">).exists()){</span>
+                    <span class="s1">String user_cover = snapshot.child(</span><span class="s3">&quot;cover_pic&quot;</span><span class="s1">).getValue().toString()</span><span class="s0">;</span>
+
+                    <span class="s1">Picasso.get().load(user_cover).into(coverPic)</span><span class="s0">;</span>
+                <span class="s1">}</span>
+                <span class="s0">else </span><span class="s1">{</span>
+                    <span class="s1">Picasso.get().load(R.drawable.profile).into(coverPic)</span><span class="s0">;</span>
+                <span class="s1">}</span>
+
+            <span class="s1">}</span>
+
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onCancelled(@NonNull DatabaseError error) {</span>
+
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+    <span class="s1">}</span>
+<span class="s1">}</span></pre>
+</body>
+</html>

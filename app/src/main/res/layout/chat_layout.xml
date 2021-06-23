@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:maxHeight="60dp"
+    android:layout_margin="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <RelativeLayout
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            >
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/userProfile"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/pp"/>
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/status"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:background="@drawable/grad5"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="2dp"
+                android:layout_marginBottom="2dp"
+                android:visibility="gone"
+                />
+
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:layout_gravity="center">
+
+            <TextView
+                android:id="@+id/username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:text=""/>
+
+            <TextView
+                android:id="@+id/lastMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="5dp"
+            >
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="12:00 pm"
+            android:layout_gravity="right"
+            android:textSize="10dp"
+
+            />
+            <TextView
+                android:id="@+id/tv_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="22dp"
+                android:minHeight="22dp"
+                android:text="1"
+                android:layout_marginTop="2dp"
+                android:textAlignment="center"
+                android:background="@drawable/noti_back"
+                android:padding="5dp"
+                android:textSize="10dp"
+                android:textColor="@color/white"
+                android:visibility="gone"
+
+                />
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+</RelativeLayout>

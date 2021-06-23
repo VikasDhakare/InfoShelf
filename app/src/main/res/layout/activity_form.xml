@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FormActivity"
+    android:background="@drawable/blankback">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/s_v"
+        android:background="@drawable/post_background">
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:id="@+id/s_v"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="10dp"
+        android:background="@drawable/post_background">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/prof_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="10dp" />
+
+
+            <LinearLayout
+                android:id="@+id/schooling_form"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <EditText
+                    android:id="@+id/et_school_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:background="@null"
+                    android:drawableStart="@drawable/school"
+                    android:drawablePadding="10dp"
+                    android:hint="School Name"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:padding="10dp" />
+
+                <EditText
+                    android:id="@+id/et_standard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:background="@null"
+                    android:drawableStart="@drawable/standard"
+                    android:drawablePadding="10dp"
+                    android:hint="Standard"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:padding="10dp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/s_area_of_interest"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_toLeftOf="@id/saoi_add"
+                        android:background="@null"
+                        android:drawableStart="@drawable/interest"
+                        android:drawablePadding="10dp"
+                        android:hint="Area Of Interest"
+                        android:inputType="textCapSentences|textMultiLine"
+                        android:padding="10dp" />
+
+                    <ImageView
+                        android:id="@+id/saoi_add"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/add" />
+
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/l_saoi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="20dp"
+                    />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/s_dream_company"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_marginBottom="20dp"
+                        android:layout_toLeftOf="@id/sdc_add"
+                        android:background="@null"
+                        android:drawableStart="@drawable/company"
+                        android:drawablePadding="10dp"
+                        android:hint="Dream Company"
+                        android:inputType="textCapSentences|textMultiLine"
+                        android:padding="10dp" />
+
+                    <ImageView
+                        android:id="@+id/sdc_add"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/add" />
+
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/l_sdc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginBottom="20dp"/>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/graduation_form"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <EditText
+                    android:id="@+id/et_college_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:background="@null"
+                    android:drawableStart="@drawable/school"
+                    android:drawablePadding="10dp"
+                    android:hint="College Name"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:padding="10dp" />
+
+                <EditText
+                    android:id="@+id/et_course"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:background="@null"
+                    android:drawableStart="@drawable/standard"
+                    android:drawablePadding="10dp"
+                    android:hint="Course"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:padding="10dp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/g_area_of_interest"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_toLeftOf="@id/gaoi_add"
+                        android:background="@null"
+                        android:drawableStart="@drawable/interest"
+                        android:drawablePadding="10dp"
+                        android:hint="Area Of Interest"
+                        android:inputType="textCapSentences|textMultiLine"
+                        android:padding="10dp" />
+
+                    <ImageView
+                        android:id="@+id/gaoi_add"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/add" />
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/l_gaoi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="20dp"
+                    />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/g_dream_company"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_marginBottom="20dp"
+                        android:layout_toLeftOf="@id/gdc_add"
+                        android:background="@null"
+                        android:drawableStart="@drawable/company"
+                        android:drawablePadding="10dp"
+                        android:hint="Dream Company"
+                        android:inputType="textCapSentences|textMultiLine"
+                        android:padding="10dp" />
+
+                    <ImageView
+                        android:id="@+id/gdc_add"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/add" />
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/l_gdc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginBottom="20dp"/>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/job_form"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/j_company_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_toLeftOf="@id/jcn_add"
+                        android:background="@null"
+                        android:drawableStart="@drawable/company"
+                        android:drawablePadding="10dp"
+                        android:hint="Company Name"
+                        android:inputType="textCapSentences|textMultiLine"
+                        android:padding="10dp" />
+
+                    <ImageView
+                        android:id="@+id/jcn_add"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/add" />
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/l_jcn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="20dp"
+                    />
+
+                <EditText
+                    android:id="@+id/et_job_experience"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:background="@null"
+                    android:drawableStart="@drawable/experience"
+                    android:drawablePadding="10dp"
+                    android:hint="Job Experience"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:padding="10dp" />
+
+                <EditText
+                    android:id="@+id/et_job_role"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:background="@null"
+                    android:drawableStart="@drawable/work"
+                    android:drawablePadding="10dp"
+                    android:hint="Job Role"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:padding="10dp" />
+
+                <EditText
+                    android:id="@+id/past_college_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:background="@null"
+                    android:drawableStart="@drawable/school"
+                    android:drawablePadding="10dp"
+                    android:hint="Past College Name"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:padding="10dp" />
+
+                <EditText
+                    android:id="@+id/qualification"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:background="@null"
+                    android:drawableStart="@drawable/standard"
+                    android:drawablePadding="10dp"
+                    android:hint="Qualification"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:padding="10dp" />
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+    <ImageView
+        android:id="@+id/btn_proceed"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="12dp"
+        android:background="@drawable/round"
+        android:elevation="8dp"
+        android:padding="10dp"
+        android:src="@drawable/proceed"
+        android:textAlignment="center"
+        android:textSize="16dp"
+        android:textStyle="bold" />
+
+</RelativeLayout>

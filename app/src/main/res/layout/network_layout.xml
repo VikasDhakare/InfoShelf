@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="180dp"
+    android:layout_height="180dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="20dp"
+    app:cardBackgroundColor="#f2f7fb"
+    android:layout_margin="10dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <ImageView
+            android:id="@+id/coverProfile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/pic1"
+            />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:background="#f2f7fb"
+            android:alpha="0.7"
+            android:layout_alignParentBottom="true"
+            >
+
+            <TextView
+                android:id="@+id/username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
+                android:text="USERNAME"
+                android:textSize="12dp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                />
+
+            <TextView
+                android:id="@+id/userInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/username"
+                android:textSize="10sp"
+                android:layout_margin="5dp"
+                android:textColor="@color/black"
+                android:layout_centerHorizontal="true"
+                android:text="Schooling at Agra Vanasthali"/>
+
+             <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@+id/userInfo"
+                android:layout_alignParentBottom="true"
+                android:gravity="center"
+                >
+                <TextView
+                    android:id="@+id/accept"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="12dp"
+                    android:paddingLeft="12dp"
+                    android:visibility="gone"
+                    android:layout_marginRight="10dp"
+                    android:drawableEnd="@drawable/accept"
+                    android:textColor="@color/white"
+                    android:background="@drawable/grad5"
+                    android:layout_centerHorizontal="true"
+                    />
+                <TextView
+                    android:id="@+id/reject"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="12dp"
+                    android:paddingLeft="12dp"
+                    android:visibility="gone"
+                    android:layout_marginLeft="10dp"
+                    android:drawableEnd="@drawable/cancle"
+                    android:textColor="@color/white"
+                    android:background="@drawable/grad5"
+                    android:layout_centerHorizontal="true"
+                    />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/request"
+                android:layout_below="@+id/userInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:paddingRight="12dp"
+                android:paddingLeft="12dp"
+                android:visibility="visible"
+                android:drawableEnd="@drawable/request"
+                android:textColor="@color/white"
+                android:background="@drawable/grad5"
+                android:layout_centerHorizontal="true"
+                />
+            <TextView
+                android:id="@+id/send"
+                android:layout_below="@+id/userInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:paddingRight="12dp"
+                android:paddingLeft="12dp"
+                android:visibility="gone"
+                android:drawableEnd="@drawable/send"
+                android:textColor="@color/white"
+                android:background="@drawable/grad5"
+                android:layout_centerHorizontal="true"
+                />
+            <TextView
+                android:id="@+id/accepted"
+                android:layout_below="@+id/userInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:paddingRight="12dp"
+                android:paddingLeft="12dp"
+                android:visibility="gone"
+                android:drawableEnd="@drawable/accept"
+                android:textColor="@color/white"
+                android:background="@drawable/grad5"
+                android:layout_centerHorizontal="true"
+                />
+
+        </RelativeLayout>
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/userProfile"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:elevation="100dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/pic2"
+            />
+
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

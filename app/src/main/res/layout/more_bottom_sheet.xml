@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/sheet3"
+    android:background="@drawable/sheet_bg"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:background="#D1C8C8"/>
+
+    <LinearLayout
+        android:id="@+id/share_l"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:gravity="center"
+        >
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/share"
+            android:layout_marginRight="10dp"
+            app:tint="#555" />
+
+        <TextView
+            android:id="@+id/share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/artifika"
+            android:text="Share"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bookmark_l"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="20dp"
+        android:gravity="center"
+        android:layout_marginLeft="20dp">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_baseline_bookmark_border_24"
+            android:layout_marginRight="10dp"
+            app:tint="#555" />
+
+        <TextView
+            android:id="@+id/bookmark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/artifika"
+            android:text="Bookmark"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/copyUrl_l"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="20dp"
+        android:gravity="center"
+        android:layout_marginLeft="20dp">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_baseline_content_copy_24"
+            android:layout_marginRight="10dp"
+            app:tint="#555" />
+
+        <TextView
+            android:id="@+id/copyUrl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/artifika"
+            android:text="Copy Url"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/edit_l"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="20dp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_marginLeft="20dp">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_baseline_edit_24"
+            android:layout_marginRight="10dp"
+            app:tint="#555" />
+
+        <TextView
+            android:id="@+id/edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/artifika"
+            android:text="Edit"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/delete_l"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="20dp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_marginLeft="20dp">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_delete"
+            android:layout_marginRight="10dp"
+            app:tint="#555" />
+
+        <TextView
+            android:id="@+id/delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/artifika"
+            android:text="Delete"/>
+
+    </LinearLayout>
+
+</LinearLayout>

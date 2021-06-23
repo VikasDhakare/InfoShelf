@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/sheet1"
+    android:orientation="vertical"
+    android:background="@drawable/sheet_bg"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/titleProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Profile Picture"
+            android:textSize="20sp"
+            android:layout_margin="10dp"
+            android:textStyle="bold"
+            android:fontFamily="@font/almendra_sc"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_picture_in_picture_24"
+            android:layout_marginRight="10dp"
+            app:tint="#03A9F4" />
+
+        <TextView
+            android:id="@+id/viewProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:fontFamily="@font/alegreya"
+            android:layout_marginLeft="10dp"
+            android:text="View Profile"/>
+
+
+
+    </LinearLayout>
+
+</LinearLayout>

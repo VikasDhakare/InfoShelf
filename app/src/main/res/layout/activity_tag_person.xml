@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/personTagLayout"
+    android:background="@drawable/sheet_bg"
+    >
+
+  <LinearLayout
+      android:id="@+id/TopLayout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal">
+    <EditText
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="80"
+        android:id="@+id/TypeChipsTag"
+        android:hint="Enter name"
+        android:layout_margin="10dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:background="@drawable/edittextback"/>
+      <TextView
+          android:id="@+id/DoneTag"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="20"
+          android:layout_gravity="center"
+          android:text="Done"
+          android:textAlignment="center"
+          android:textColor="#4CAF50"
+          android:textStyle="bold"
+          android:paddingBottom="5dp"
+          android:paddingTop="5dp"
+          android:textSize="18sp"
+          android:layout_margin="10dp"/>
+  </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/tabRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/TopLayout" />
+    <LinearLayout
+        android:layout_width="match_parent"
+
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content">
+
+    </LinearLayout>
+</RelativeLayout>

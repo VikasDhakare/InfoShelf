@@ -1,0 +1,578 @@
+<html>
+<head>
+<title>network_adaptor.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6a8759;}
+.s3 { color: #808080;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+network_adaptor.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.card.infoshelf.bottomfragment</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.content.Context</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.Intent</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.LayoutInflater</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.View</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.ViewGroup</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.ImageView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.TextView</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">androidx.annotation.NonNull</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.recyclerview.widget.RecyclerView</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">com.card.infoshelf.R</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.card.infoshelf.userProfileActivity</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.tasks.OnCompleteListener</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.tasks.Task</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.auth.FirebaseAuth</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.database.DataSnapshot</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.database.DatabaseError</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.database.DatabaseReference</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.database.FirebaseDatabase</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.database.ValueEventListener</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.squareup.picasso.Picasso</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">java.util.ArrayList</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">de.hdodenhof.circleimageview.CircleImageView</span><span class="s0">;</span>
+
+<span class="s0">public class </span><span class="s1">network_adaptor </span><span class="s0">extends </span><span class="s1">RecyclerView.Adapter&lt;network_adaptor.MyviewHolder&gt;{</span>
+
+    <span class="s0">private </span><span class="s1">Context context</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">ArrayList&lt;networkModel&gt; list</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">DatabaseReference UsersRef </span><span class="s0">, </span><span class="s1">ChatRef </span><span class="s0">, </span><span class="s1">FriendsRef </span><span class="s0">, </span><span class="s1">PostRef</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">FirebaseAuth mAuth</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">String currentState </span><span class="s0">, </span><span class="s1">senderUserID  </span><span class="s0">, </span><span class="s1">receiverUserID</span><span class="s0">;</span>
+
+    <span class="s0">public </span><span class="s1">network_adaptor(Context context</span><span class="s0">, </span><span class="s1">ArrayList&lt;networkModel&gt; list) {</span>
+        <span class="s0">this</span><span class="s1">.context = context</span><span class="s0">;</span>
+        <span class="s0">this</span><span class="s1">.list = list</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@NonNull</span>
+    <span class="s1">@Override</span>
+    <span class="s0">public </span><span class="s1">network_adaptor.MyviewHolder onCreateViewHolder(@NonNull ViewGroup parent</span><span class="s0">, int </span><span class="s1">viewType) {</span>
+        <span class="s1">View v = LayoutInflater.from(context).inflate(R.layout.network_layout</span><span class="s0">,</span><span class="s1">parent</span><span class="s0">,false</span><span class="s1">)</span><span class="s0">;</span>
+
+        <span class="s0">return new </span><span class="s1">network_adaptor.MyviewHolder(v)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">onBindViewHolder(@NonNull network_adaptor.MyviewHolder holder</span><span class="s0">, int </span><span class="s1">position) {</span>
+        <span class="s1">networkModel user = list.get(position)</span><span class="s0">;</span>
+
+        <span class="s1">UsersRef = FirebaseDatabase.getInstance().getReference().child(</span><span class="s2">&quot;Users&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">ChatRef = FirebaseDatabase.getInstance().getReference().child(</span><span class="s2">&quot;Chat Requests&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">FriendsRef = FirebaseDatabase.getInstance().getReference().child(</span><span class="s2">&quot;Friends&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">PostRef = FirebaseDatabase.getInstance().getReference().child(</span><span class="s2">&quot;Posts&quot;</span><span class="s1">)</span><span class="s0">;</span>
+
+        <span class="s1">mAuth = FirebaseAuth.getInstance()</span><span class="s0">;</span>
+        <span class="s1">senderUserID = mAuth.getCurrentUser().getUid()</span><span class="s0">;</span>
+        <span class="s1">receiverUserID = user.getUserId()</span><span class="s0">;</span>
+        <span class="s1">currentState = </span><span class="s2">&quot;new&quot;</span><span class="s0">;</span>
+
+        <span class="s1">String userId = user.getUserId()</span><span class="s0">;</span>
+        <span class="s1">String prof  = user.getProfession()</span><span class="s0">;</span>
+
+        <span class="s1">holder.getUserInfo(prof</span><span class="s0">, </span><span class="s1">userId)</span><span class="s0">;</span>
+
+        <span class="s1">holder.itemView.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(context</span><span class="s0">, </span><span class="s1">userProfileActivity.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">intent.putExtra(</span><span class="s2">&quot;userid&quot;</span><span class="s0">, </span><span class="s1">userId)</span><span class="s0">;</span>
+                <span class="s1">context.startActivity(intent)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+        <span class="s0">if </span><span class="s1">(!senderUserID.equals(userId))</span>
+        <span class="s1">{</span>
+            <span class="s1">holder.request.setVisibility(View.VISIBLE)</span><span class="s0">;</span>
+            <span class="s1">holder.request.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+                <span class="s1">@Override</span>
+                <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+
+                    <span class="s1">String id = user.getUserId()</span><span class="s0">;</span>
+                    <span class="s1">SendChatRequest(holder </span><span class="s0">, </span><span class="s1">id)</span><span class="s0">;</span>
+                <span class="s1">}</span>
+            <span class="s1">})</span><span class="s0">;</span>
+            <span class="s1">holder.send.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+                <span class="s1">@Override</span>
+                <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                    <span class="s1">String id = user.getUserId()</span><span class="s0">;</span>
+                    <span class="s1">CancelChatRequest(holder </span><span class="s0">, </span><span class="s1">id </span><span class="s0">, </span><span class="s1">position)</span><span class="s0">;</span>
+                <span class="s1">}</span>
+            <span class="s1">})</span><span class="s0">;</span>
+            <span class="s1">holder.accept.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+                <span class="s1">@Override</span>
+                <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                    <span class="s1">String id = user.getUserId()</span><span class="s0">;</span>
+                    <span class="s1">AcceptChatRequest(holder </span><span class="s0">, </span><span class="s1">id)</span><span class="s0">;</span>
+                <span class="s1">}</span>
+            <span class="s1">})</span><span class="s0">;</span>
+            <span class="s1">holder.reject.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+                <span class="s1">@Override</span>
+                <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                    <span class="s1">String id = user.getUserId()</span><span class="s0">;</span>
+                    <span class="s1">CancelChatRequest(holder </span><span class="s0">, </span><span class="s1">id</span><span class="s0">, </span><span class="s1">position)</span><span class="s0">;</span>
+                <span class="s1">}</span>
+            <span class="s1">})</span><span class="s0">;</span>
+            <span class="s1">holder.accepted.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+                <span class="s1">@Override</span>
+                <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                    <span class="s1">String id = user.getUserId()</span><span class="s0">;</span>
+                    <span class="s1">RemoveSpecificContact(holder </span><span class="s0">, </span><span class="s1">id)</span><span class="s0">;</span>
+                <span class="s1">}</span>
+            <span class="s1">})</span><span class="s0">;</span>
+        <span class="s1">}</span>
+        <span class="s0">else</span>
+        <span class="s1">{</span>
+            <span class="s1">holder.request.setVisibility(View.GONE)</span><span class="s0">;</span>
+            <span class="s1">holder.send.setVisibility(View.GONE)</span><span class="s0">;</span>
+            <span class="s1">holder.accept.setVisibility(View.GONE)</span><span class="s0">;</span>
+            <span class="s1">holder.reject.setVisibility(View.GONE)</span><span class="s0">;</span>
+            <span class="s1">holder.accepted.setVisibility(View.GONE)</span><span class="s0">;</span>
+
+
+        <span class="s1">}</span>
+
+        <span class="s1">ManageChatRequests(holder </span><span class="s0">, </span><span class="s1">userId)</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+
+    <span class="s1">@Override</span>
+    <span class="s0">public int </span><span class="s1">getItemCount() {</span>
+        <span class="s0">return </span><span class="s1">list.size()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public class </span><span class="s1">MyviewHolder </span><span class="s0">extends </span><span class="s1">RecyclerView.ViewHolder{</span>
+
+        <span class="s0">private </span><span class="s1">ImageView coverProfile</span><span class="s0">;</span>
+        <span class="s0">private </span><span class="s1">TextView username</span><span class="s0">, </span><span class="s1">userInfo</span><span class="s0">;</span>
+        <span class="s0">private </span><span class="s1">CircleImageView userProfile</span><span class="s0">;</span>
+        <span class="s0">private </span><span class="s1">TextView  request </span><span class="s0">, </span><span class="s1">accept </span><span class="s0">, </span><span class="s1">reject </span><span class="s0">, </span><span class="s1">send  </span><span class="s0">, </span><span class="s1">accepted</span><span class="s0">;</span>
+
+
+        <span class="s0">public </span><span class="s1">MyviewHolder(@NonNull View itemView) {</span>
+            <span class="s0">super</span><span class="s1">(itemView)</span><span class="s0">;</span>
+
+            <span class="s1">coverProfile = itemView.findViewById(R.id.coverProfile)</span><span class="s0">;</span>
+            <span class="s1">username = itemView.findViewById(R.id.username)</span><span class="s0">;</span>
+            <span class="s1">userInfo = itemView.findViewById(R.id.userInfo)</span><span class="s0">;</span>
+            <span class="s1">userProfile = itemView.findViewById(R.id.userProfile)</span><span class="s0">;</span>
+            <span class="s1">request = itemView.findViewById(R.id.request)</span><span class="s0">;</span>
+            <span class="s1">accept = itemView.findViewById(R.id.accept)</span><span class="s0">;</span>
+            <span class="s1">reject = itemView.findViewById(R.id.reject)</span><span class="s0">;</span>
+            <span class="s1">send = itemView.findViewById(R.id.send)</span><span class="s0">;</span>
+            <span class="s1">accepted = itemView.findViewById(R.id.accepted)</span><span class="s0">;</span>
+        <span class="s1">}</span>
+
+        <span class="s0">public void </span><span class="s1">getUserInfo(String prof</span><span class="s0">, </span><span class="s1">String userId) {</span>
+
+            <span class="s1">DatabaseReference infoREf = FirebaseDatabase.getInstance().getReference(</span><span class="s2">&quot;UserDetails&quot;</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">infoREf.child(userId).addValueEventListener(</span><span class="s0">new </span><span class="s1">ValueEventListener() {</span>
+                <span class="s1">@Override</span>
+                <span class="s0">public void </span><span class="s1">onDataChange(@NonNull DataSnapshot snapshot) {</span>
+                    <span class="s1">String profession = snapshot.child(</span><span class="s2">&quot;profession&quot;</span><span class="s1">).getValue().toString()</span><span class="s0">;</span>
+
+                    <span class="s0">if </span><span class="s1">(profession.equals(</span><span class="s2">&quot;Schooling&quot;</span><span class="s1">)){</span>
+                        <span class="s1">String school_name = snapshot.child(</span><span class="s2">&quot;school_name&quot;</span><span class="s1">).getValue().toString()</span><span class="s0">;</span>
+                        <span class="s1">userInfo.setText(profession+</span><span class="s2">&quot; at &quot;</span><span class="s1">+ school_name)</span><span class="s0">;</span>
+                        <span class="s1">getUserName(userId)</span><span class="s0">;</span>
+
+                    <span class="s1">}</span>
+                    <span class="s0">if </span><span class="s1">(profession.equals(</span><span class="s2">&quot;Graduation&quot;</span><span class="s1">)){</span>
+                        <span class="s1">String college_name = snapshot.child(</span><span class="s2">&quot;college_name&quot;</span><span class="s1">).getValue().toString()</span><span class="s0">;</span>
+                        <span class="s1">String course = snapshot.child(</span><span class="s2">&quot;course&quot;</span><span class="s1">).getValue().toString()</span><span class="s0">;</span>
+
+                        <span class="s1">userInfo.setText(course+</span><span class="s2">&quot; at &quot;</span><span class="s1">+ college_name)</span><span class="s0">;</span>
+                        <span class="s1">getUserName(userId)</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+                    <span class="s0">if </span><span class="s1">(profession.equals(</span><span class="s2">&quot;Job&quot;</span><span class="s1">)){</span>
+                        <span class="s1">String job_role = snapshot.child(</span><span class="s2">&quot;job_role&quot;</span><span class="s1">).getValue().toString()</span><span class="s0">;</span>
+                        <span class="s1">userInfo.setText(job_role)</span><span class="s0">;</span>
+                        <span class="s1">getUserName(userId)</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+                <span class="s1">}</span>
+
+                <span class="s1">@Override</span>
+                <span class="s0">public void </span><span class="s1">onCancelled(@NonNull DatabaseError error) {</span>
+
+                <span class="s1">}</span>
+            <span class="s1">})</span><span class="s0">;</span>
+
+        <span class="s1">}</span>
+
+        <span class="s0">public void </span><span class="s1">getUserName(String userId) {</span>
+
+            <span class="s1">DatabaseReference userNameRef = FirebaseDatabase.getInstance().getReference(</span><span class="s2">&quot;Users&quot;</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">userNameRef.child(userId).addValueEventListener(</span><span class="s0">new </span><span class="s1">ValueEventListener() {</span>
+                <span class="s1">@Override</span>
+                <span class="s0">public void </span><span class="s1">onDataChange(@NonNull DataSnapshot snapshot) {</span>
+                    <span class="s1">String user_name = snapshot.child(</span><span class="s2">&quot;userName&quot;</span><span class="s1">).getValue().toString()</span><span class="s0">;</span>
+                    <span class="s1">username.setText(user_name)</span><span class="s0">;</span>
+
+                    <span class="s3">//                for profile pic</span>
+                    <span class="s0">if </span><span class="s1">(snapshot.child(</span><span class="s2">&quot;profile_image&quot;</span><span class="s1">).exists()){</span>
+                        <span class="s1">String user_Profile = snapshot.child(</span><span class="s2">&quot;profile_image&quot;</span><span class="s1">).getValue().toString()</span><span class="s0">;</span>
+                        <span class="s1">Picasso.get().load(user_Profile).into(userProfile)</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+<span class="s3">//                    else {</span>
+<span class="s3">//                        Picasso.get().load(R.drawable.profile).into(userProfile);</span>
+<span class="s3">//                    }</span>
+
+<span class="s3">//                for cover pic</span>
+                    <span class="s0">if </span><span class="s1">(snapshot.child(</span><span class="s2">&quot;cover_pic&quot;</span><span class="s1">).exists()){</span>
+                        <span class="s1">String user_cover = snapshot.child(</span><span class="s2">&quot;cover_pic&quot;</span><span class="s1">).getValue().toString()</span><span class="s0">;</span>
+
+                        <span class="s1">Picasso.get().load(user_cover).into(coverProfile)</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+<span class="s3">//                    else {</span>
+<span class="s3">//                        Picasso.get().load(R.drawable.profile).into(coverProfile);</span>
+<span class="s3">//                    }</span>
+                <span class="s1">}</span>
+
+                <span class="s1">@Override</span>
+                <span class="s0">public void </span><span class="s1">onCancelled(@NonNull DatabaseError error) {</span>
+
+                <span class="s1">}</span>
+            <span class="s1">})</span><span class="s0">;</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+
+    <span class="s0">private void </span><span class="s1">ManageChatRequests(MyviewHolder holder</span><span class="s0">, </span><span class="s1">String userId)</span>
+    <span class="s1">{</span>
+        <span class="s1">ChatRef.child(senderUserID).addValueEventListener(</span><span class="s0">new </span><span class="s1">ValueEventListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onDataChange(@NonNull DataSnapshot snapshot) {</span>
+                <span class="s0">if </span><span class="s1">(snapshot.hasChild(userId))</span>
+                <span class="s1">{</span>
+                    <span class="s1">String request_type = snapshot.child(userId).child(</span><span class="s2">&quot;request_type&quot;</span><span class="s1">).getValue().toString()</span><span class="s0">;</span>
+
+                    <span class="s0">if </span><span class="s1">(request_type.equals(</span><span class="s2">&quot;sent&quot;</span><span class="s1">))</span>
+                    <span class="s1">{</span>
+                        <span class="s1">currentState = </span><span class="s2">&quot;request_sent&quot;</span><span class="s0">;</span>
+
+                        <span class="s1">holder.request.setVisibility(View.GONE)</span><span class="s0">;</span>
+                        <span class="s1">holder.send.setVisibility(View.VISIBLE)</span><span class="s0">;</span>
+                        <span class="s1">holder.accept.setVisibility(View.GONE)</span><span class="s0">;</span>
+                        <span class="s1">holder.reject.setVisibility(View.GONE)</span><span class="s0">;</span>
+                        <span class="s1">holder.accepted.setVisibility(View.GONE)</span><span class="s0">;</span>
+
+
+                    <span class="s1">}</span>
+                    <span class="s0">else if </span><span class="s1">(request_type.equals(</span><span class="s2">&quot;received&quot;</span><span class="s1">))</span>
+                    <span class="s1">{</span>
+                        <span class="s1">currentState = </span><span class="s2">&quot;request_received&quot;</span><span class="s0">;</span>
+
+                        <span class="s1">holder.request.setVisibility(View.GONE)</span><span class="s0">;</span>
+                        <span class="s1">holder.send.setVisibility(View.GONE)</span><span class="s0">;</span>
+                        <span class="s1">holder.accept.setVisibility(View.VISIBLE)</span><span class="s0">;</span>
+                        <span class="s1">holder.reject.setVisibility(View.VISIBLE)</span><span class="s0">;</span>
+                        <span class="s1">holder.accepted.setVisibility(View.GONE)</span><span class="s0">;</span>
+
+                    <span class="s1">}</span>
+                    <span class="s0">else if </span><span class="s1">(request_type.equals(</span><span class="s2">&quot;cancel&quot;</span><span class="s1">))</span>
+                    <span class="s1">{</span>
+                        <span class="s1">currentState = </span><span class="s2">&quot;new&quot;</span><span class="s0">;</span>
+
+                        <span class="s1">holder.request.setVisibility(View.VISIBLE)</span><span class="s0">;</span>
+                        <span class="s1">holder.send.setVisibility(View.GONE)</span><span class="s0">;</span>
+                        <span class="s1">holder.accept.setVisibility(View.GONE)</span><span class="s0">;</span>
+                        <span class="s1">holder.reject.setVisibility(View.GONE)</span><span class="s0">;</span>
+                        <span class="s1">holder.accepted.setVisibility(View.GONE)</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+                <span class="s1">}</span>
+                <span class="s0">else </span><span class="s1">{</span>
+
+                    <span class="s1">FriendsRef.child(senderUserID).addValueEventListener(</span><span class="s0">new </span><span class="s1">ValueEventListener() {</span>
+                        <span class="s1">@Override</span>
+                        <span class="s0">public void </span><span class="s1">onDataChange(@NonNull DataSnapshot snapshot) {</span>
+                            <span class="s0">if </span><span class="s1">(snapshot.hasChild(userId))</span>
+                            <span class="s1">{</span>
+                                <span class="s1">String f = snapshot.child(userId).child(</span><span class="s2">&quot;Friends&quot;</span><span class="s1">).getValue().toString()</span><span class="s0">;</span>
+                                <span class="s0">if </span><span class="s1">(f.equals(</span><span class="s2">&quot;Saved&quot;</span><span class="s1">))</span>
+                                <span class="s1">{</span>
+                                    <span class="s1">currentState = </span><span class="s2">&quot;friends&quot;</span><span class="s0">;</span>
+
+                                    <span class="s1">holder.request.setVisibility(View.GONE)</span><span class="s0">;</span>
+                                    <span class="s1">holder.send.setVisibility(View.GONE)</span><span class="s0">;</span>
+                                    <span class="s1">holder.accept.setVisibility(View.GONE)</span><span class="s0">;</span>
+                                    <span class="s1">holder.reject.setVisibility(View.GONE)</span><span class="s0">;</span>
+                                    <span class="s1">holder.accepted.setVisibility(View.VISIBLE)</span><span class="s0">;</span>
+
+                                <span class="s1">}</span>
+                                <span class="s0">else if </span><span class="s1">(f.equals(</span><span class="s2">&quot;UnFriend&quot;</span><span class="s1">))</span>
+                                <span class="s1">{</span>
+                                    <span class="s1">currentState = </span><span class="s2">&quot;new&quot;</span><span class="s0">;</span>
+
+                                    <span class="s1">holder.request.setVisibility(View.VISIBLE)</span><span class="s0">;</span>
+                                    <span class="s1">holder.send.setVisibility(View.GONE)</span><span class="s0">;</span>
+                                    <span class="s1">holder.accept.setVisibility(View.GONE)</span><span class="s0">;</span>
+                                    <span class="s1">holder.reject.setVisibility(View.GONE)</span><span class="s0">;</span>
+                                    <span class="s1">holder.accepted.setVisibility(View.GONE)</span><span class="s0">;</span>
+                                <span class="s1">}</span>
+
+                            <span class="s1">}</span>
+                        <span class="s1">}</span>
+
+                        <span class="s1">@Override</span>
+                        <span class="s0">public void </span><span class="s1">onCancelled(@NonNull DatabaseError error) {</span>
+
+                        <span class="s1">}</span>
+                    <span class="s1">})</span><span class="s0">;</span>
+                <span class="s1">}</span>
+            <span class="s1">}</span>
+
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onCancelled(@NonNull DatabaseError error) {</span>
+
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+
+    <span class="s1">}</span>
+    <span class="s0">private void </span><span class="s1">SendChatRequest(network_adaptor.MyviewHolder holder</span><span class="s0">, </span><span class="s1">String id)</span>
+    <span class="s1">{</span>
+        <span class="s1">currentState = </span><span class="s2">&quot;new&quot;</span><span class="s0">;</span>
+        <span class="s1">ChatRef.child(senderUserID).child(id).child(</span><span class="s2">&quot;request_type&quot;</span><span class="s1">).setValue(</span><span class="s2">&quot;sent&quot;</span><span class="s1">).addOnCompleteListener(</span><span class="s0">new </span><span class="s1">OnCompleteListener&lt;Void&gt;() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onComplete(@NonNull Task&lt;Void&gt; task) {</span>
+
+                <span class="s0">if </span><span class="s1">(task.isSuccessful())</span>
+                <span class="s1">{</span>
+                    <span class="s1">ChatRef.child(id).child(senderUserID).child(</span><span class="s2">&quot;request_type&quot;</span><span class="s1">).setValue(</span><span class="s2">&quot;received&quot;</span><span class="s1">).addOnCompleteListener(</span><span class="s0">new </span><span class="s1">OnCompleteListener&lt;Void&gt;() {</span>
+                        <span class="s1">@Override</span>
+                        <span class="s0">public void </span><span class="s1">onComplete(@NonNull Task&lt;Void&gt; task) {</span>
+
+                            <span class="s0">if </span><span class="s1">(task.isSuccessful())</span>
+                            <span class="s1">{</span>
+                                <span class="s1">currentState = </span><span class="s2">&quot;request_sent&quot;</span><span class="s0">;</span>
+                                <span class="s1">ManageChatRequests(holder </span><span class="s0">, </span><span class="s1">id)</span><span class="s0">;</span>
+                            <span class="s1">}</span>
+                        <span class="s1">}</span>
+                    <span class="s1">})</span><span class="s0">;</span>
+                <span class="s1">}</span>
+
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+
+
+
+    <span class="s1">}</span>
+
+    <span class="s0">private void </span><span class="s1">CancelChatRequest(network_adaptor.MyviewHolder holder</span><span class="s0">, </span><span class="s1">String id</span><span class="s0">, int </span><span class="s1">position)</span>
+    <span class="s1">{</span>
+        <span class="s1">ChatRef.child(senderUserID).child(id).child(</span><span class="s2">&quot;request_type&quot;</span><span class="s1">).setValue(</span><span class="s2">&quot;cancel&quot;</span><span class="s1">).addOnCompleteListener(</span><span class="s0">new </span><span class="s1">OnCompleteListener&lt;Void&gt;() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onComplete(@NonNull Task&lt;Void&gt; task) {</span>
+
+                <span class="s0">if </span><span class="s1">(task.isSuccessful())</span>
+                <span class="s1">{</span>
+                    <span class="s1">ChatRef.child(id).child(senderUserID).child(</span><span class="s2">&quot;request_type&quot;</span><span class="s1">).setValue(</span><span class="s2">&quot;cancel&quot;</span><span class="s1">).addOnCompleteListener(</span><span class="s0">new </span><span class="s1">OnCompleteListener&lt;Void&gt;() {</span>
+                        <span class="s1">@Override</span>
+                        <span class="s0">public void </span><span class="s1">onComplete(@NonNull Task&lt;Void&gt; task) {</span>
+
+                            <span class="s0">if </span><span class="s1">(task.isSuccessful())</span>
+                            <span class="s1">{</span>
+                                <span class="s1">currentState = </span><span class="s2">&quot;new&quot;</span><span class="s0">;</span>
+                                <span class="s1">ManageChatRequests(holder </span><span class="s0">, </span><span class="s1">id)</span><span class="s0">;</span>
+                                <span class="s1">ChatRef.child(senderUserID).child(id).child(</span><span class="s2">&quot;request_type&quot;</span><span class="s1">).removeValue()</span><span class="s0">;</span>
+                                <span class="s1">ChatRef.child(id).child(senderUserID).child(</span><span class="s2">&quot;request_type&quot;</span><span class="s1">).removeValue()</span><span class="s0">;</span>
+                            <span class="s1">}</span>
+                        <span class="s1">}</span>
+                    <span class="s1">})</span><span class="s0">;</span>
+                <span class="s1">}</span>
+
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+
+
+
+    <span class="s1">}</span>
+
+
+    <span class="s0">private void </span><span class="s1">AcceptChatRequest(network_adaptor.MyviewHolder holder  </span><span class="s0">, </span><span class="s1">String id)</span>
+    <span class="s1">{</span>
+        <span class="s1">FriendsRef.child(senderUserID).child(id).child(</span><span class="s2">&quot;Friends&quot;</span><span class="s1">).setValue(</span><span class="s2">&quot;Saved&quot;</span><span class="s1">).addOnCompleteListener(</span><span class="s0">new </span><span class="s1">OnCompleteListener&lt;Void&gt;() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onComplete(@NonNull Task&lt;Void&gt; task) {</span>
+                <span class="s0">if </span><span class="s1">(task.isSuccessful())</span>
+                <span class="s1">{</span>
+                    <span class="s1">UsersRef.child(id).addValueEventListener(</span><span class="s0">new </span><span class="s1">ValueEventListener() {</span>
+                        <span class="s1">@Override</span>
+                        <span class="s0">public void </span><span class="s1">onDataChange(@NonNull DataSnapshot snapshot) {</span>
+
+                            <span class="s0">if </span><span class="s1">(snapshot.exists())</span>
+                            <span class="s1">{</span>
+                                <span class="s1">String name = snapshot.child(</span><span class="s2">&quot;userName&quot;</span><span class="s1">).getValue().toString()</span><span class="s0">;</span>
+                                <span class="s1">FriendsRef.child(senderUserID).child(id).child(</span><span class="s2">&quot;name&quot;</span><span class="s1">).setValue(name).addOnCompleteListener(</span><span class="s0">new </span><span class="s1">OnCompleteListener&lt;Void&gt;() {</span>
+                                    <span class="s1">@Override</span>
+                                    <span class="s0">public void </span><span class="s1">onComplete(@NonNull Task&lt;Void&gt; task) {</span>
+                                        <span class="s1">ManageChatRequests(holder </span><span class="s0">, </span><span class="s1">id)</span><span class="s0">;</span>
+                                    <span class="s1">}</span>
+                                <span class="s1">})</span><span class="s0">;</span>
+                            <span class="s1">}</span>
+                        <span class="s1">}</span>
+
+                        <span class="s1">@Override</span>
+                        <span class="s0">public void </span><span class="s1">onCancelled(@NonNull DatabaseError error) {</span>
+
+                        <span class="s1">}</span>
+                    <span class="s1">})</span><span class="s0">;</span>
+                    <span class="s1">FriendsRef.child(id).child(senderUserID).child(</span><span class="s2">&quot;Friends&quot;</span><span class="s1">).setValue(</span><span class="s2">&quot;Saved&quot;</span><span class="s1">).addOnCompleteListener(</span><span class="s0">new </span><span class="s1">OnCompleteListener&lt;Void&gt;() {</span>
+                        <span class="s1">@Override</span>
+                        <span class="s0">public void </span><span class="s1">onComplete(@NonNull Task&lt;Void&gt; task) {</span>
+                            <span class="s0">if </span><span class="s1">(task.isSuccessful())</span>
+                            <span class="s1">{</span>
+                                <span class="s1">UsersRef.child(senderUserID).addValueEventListener(</span><span class="s0">new </span><span class="s1">ValueEventListener() {</span>
+                                    <span class="s1">@Override</span>
+                                    <span class="s0">public void </span><span class="s1">onDataChange(@NonNull DataSnapshot snapshot) {</span>
+
+                                        <span class="s0">if </span><span class="s1">(snapshot.exists())</span>
+                                        <span class="s1">{</span>
+                                            <span class="s1">String name = snapshot.child(</span><span class="s2">&quot;userName&quot;</span><span class="s1">).getValue().toString()</span><span class="s0">;</span>
+                                            <span class="s1">FriendsRef.child(id).child(senderUserID).child(</span><span class="s2">&quot;name&quot;</span><span class="s1">).setValue(name).addOnCompleteListener(</span><span class="s0">new </span><span class="s1">OnCompleteListener&lt;Void&gt;() {</span>
+                                                <span class="s1">@Override</span>
+                                                <span class="s0">public void </span><span class="s1">onComplete(@NonNull Task&lt;Void&gt; task) {</span>
+                                                    <span class="s1">ManageChatRequests(holder </span><span class="s0">, </span><span class="s1">id)</span><span class="s0">;</span>
+                                                <span class="s1">}</span>
+                                            <span class="s1">})</span><span class="s0">;</span>
+                                        <span class="s1">}</span>
+                                    <span class="s1">}</span>
+
+                                    <span class="s1">@Override</span>
+                                    <span class="s0">public void </span><span class="s1">onCancelled(@NonNull DatabaseError error) {</span>
+
+                                    <span class="s1">}</span>
+                                <span class="s1">})</span><span class="s0">;</span>
+
+                                <span class="s1">ChatRef.child(senderUserID).child(id).removeValue().addOnCompleteListener(</span><span class="s0">new </span><span class="s1">OnCompleteListener&lt;Void&gt;() {</span>
+                                    <span class="s1">@Override</span>
+                                    <span class="s0">public void </span><span class="s1">onComplete(@NonNull Task&lt;Void&gt; task) {</span>
+                                        <span class="s0">if </span><span class="s1">(task.isSuccessful())</span>
+                                        <span class="s1">{</span>
+                                            <span class="s1">ChatRef.child(id).child(senderUserID).removeValue().addOnCompleteListener(</span><span class="s0">new </span><span class="s1">OnCompleteListener&lt;Void&gt;() {</span>
+                                                <span class="s1">@Override</span>
+                                                <span class="s0">public void </span><span class="s1">onComplete(@NonNull Task&lt;Void&gt; task) {</span>
+                                                    <span class="s1">currentState = </span><span class="s2">&quot;friends&quot;</span><span class="s0">;</span>
+                                                    <span class="s1">ManageChatRequests(holder </span><span class="s0">, </span><span class="s1">id)</span><span class="s0">;</span>
+
+                                                <span class="s1">}</span>
+                                            <span class="s1">})</span><span class="s0">;</span>
+                                        <span class="s1">}</span>
+                                    <span class="s1">}</span>
+                                <span class="s1">})</span><span class="s0">;</span>
+
+                            <span class="s1">}</span>
+                        <span class="s1">}</span>
+                    <span class="s1">})</span><span class="s0">;</span>
+                <span class="s1">}</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+    <span class="s0">private void </span><span class="s1">RemoveSpecificContact(network_adaptor.MyviewHolder holder  </span><span class="s0">, </span><span class="s1">String id)</span>
+    <span class="s1">{</span>
+        <span class="s1">FriendsRef.child(senderUserID).child(id).child(</span><span class="s2">&quot;Friends&quot;</span><span class="s1">).setValue(</span><span class="s2">&quot;UnFriend&quot;</span><span class="s1">).addOnCompleteListener(</span><span class="s0">new </span><span class="s1">OnCompleteListener&lt;Void&gt;() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onComplete(@NonNull Task&lt;Void&gt; task) {</span>
+                <span class="s0">if </span><span class="s1">(task.isSuccessful())</span>
+                <span class="s1">{</span>
+                    <span class="s1">UsersRef.child(id).addValueEventListener(</span><span class="s0">new </span><span class="s1">ValueEventListener() {</span>
+                        <span class="s1">@Override</span>
+                        <span class="s0">public void </span><span class="s1">onDataChange(@NonNull DataSnapshot snapshot) {</span>
+
+                            <span class="s0">if </span><span class="s1">(snapshot.exists())</span>
+                            <span class="s1">{</span>
+                                <span class="s1">String name = snapshot.child(</span><span class="s2">&quot;userName&quot;</span><span class="s1">).getValue().toString()</span><span class="s0">;</span>
+                                <span class="s1">FriendsRef.child(senderUserID).child(id).child(</span><span class="s2">&quot;name&quot;</span><span class="s1">).setValue(name).addOnCompleteListener(</span><span class="s0">new </span><span class="s1">OnCompleteListener&lt;Void&gt;() {</span>
+                                    <span class="s1">@Override</span>
+                                    <span class="s0">public void </span><span class="s1">onComplete(@NonNull Task&lt;Void&gt; task) {</span>
+                                        <span class="s1">currentState = </span><span class="s2">&quot;new&quot;</span><span class="s0">;</span>
+                                        <span class="s1">ManageChatRequests(holder </span><span class="s0">, </span><span class="s1">id)</span><span class="s0">;</span>
+
+
+                                    <span class="s1">}</span>
+                                <span class="s1">})</span><span class="s0">;</span>
+                            <span class="s1">}</span>
+                        <span class="s1">}</span>
+
+                        <span class="s1">@Override</span>
+                        <span class="s0">public void </span><span class="s1">onCancelled(@NonNull DatabaseError error) {</span>
+
+                        <span class="s1">}</span>
+                    <span class="s1">})</span><span class="s0">;</span>
+                    <span class="s1">FriendsRef.child(id).child(senderUserID).child(</span><span class="s2">&quot;Friends&quot;</span><span class="s1">).setValue(</span><span class="s2">&quot;UnFriend&quot;</span><span class="s1">).addOnCompleteListener(</span><span class="s0">new </span><span class="s1">OnCompleteListener&lt;Void&gt;() {</span>
+                        <span class="s1">@Override</span>
+                        <span class="s0">public void </span><span class="s1">onComplete(@NonNull Task&lt;Void&gt; task) {</span>
+                            <span class="s0">if </span><span class="s1">(task.isSuccessful())</span>
+                            <span class="s1">{</span>
+                                <span class="s1">UsersRef.child(senderUserID).addValueEventListener(</span><span class="s0">new </span><span class="s1">ValueEventListener() {</span>
+                                    <span class="s1">@Override</span>
+                                    <span class="s0">public void </span><span class="s1">onDataChange(@NonNull DataSnapshot snapshot) {</span>
+
+                                        <span class="s0">if </span><span class="s1">(snapshot.exists())</span>
+                                        <span class="s1">{</span>
+                                            <span class="s1">String name = snapshot.child(</span><span class="s2">&quot;userName&quot;</span><span class="s1">).getValue().toString()</span><span class="s0">;</span>
+                                            <span class="s1">FriendsRef.child(id).child(senderUserID).child(</span><span class="s2">&quot;name&quot;</span><span class="s1">).setValue(name).addOnCompleteListener(</span><span class="s0">new </span><span class="s1">OnCompleteListener&lt;Void&gt;() {</span>
+                                                <span class="s1">@Override</span>
+                                                <span class="s0">public void </span><span class="s1">onComplete(@NonNull Task&lt;Void&gt; task) {</span>
+                                                    <span class="s1">currentState = </span><span class="s2">&quot;new&quot;</span><span class="s0">;</span>
+                                                    <span class="s1">ManageChatRequests(holder </span><span class="s0">, </span><span class="s1">id)</span><span class="s0">;</span>
+
+
+
+                                                <span class="s1">}</span>
+                                            <span class="s1">})</span><span class="s0">;</span>
+                                        <span class="s1">}</span>
+                                    <span class="s1">}</span>
+
+                                    <span class="s1">@Override</span>
+                                    <span class="s0">public void </span><span class="s1">onCancelled(@NonNull DatabaseError error) {</span>
+
+                                    <span class="s1">}</span>
+                                <span class="s1">})</span><span class="s0">;</span>
+
+                                <span class="s1">ChatRef.child(senderUserID).child(id).removeValue().addOnCompleteListener(</span><span class="s0">new </span><span class="s1">OnCompleteListener&lt;Void&gt;() {</span>
+                                    <span class="s1">@Override</span>
+                                    <span class="s0">public void </span><span class="s1">onComplete(@NonNull Task&lt;Void&gt; task) {</span>
+                                        <span class="s0">if </span><span class="s1">(task.isSuccessful())</span>
+                                        <span class="s1">{</span>
+                                            <span class="s1">ChatRef.child(id).child(senderUserID).removeValue().addOnCompleteListener(</span><span class="s0">new </span><span class="s1">OnCompleteListener&lt;Void&gt;() {</span>
+                                                <span class="s1">@Override</span>
+                                                <span class="s0">public void </span><span class="s1">onComplete(@NonNull Task&lt;Void&gt; task) {</span>
+                                                    <span class="s1">currentState = </span><span class="s2">&quot;new&quot;</span><span class="s0">;</span>
+                                                    <span class="s1">ManageChatRequests(holder </span><span class="s0">, </span><span class="s1">id)</span><span class="s0">;</span>
+                                                    <span class="s1">FriendsRef.child(senderUserID).child(id).removeValue()</span><span class="s0">;</span>
+                                                    <span class="s1">FriendsRef.child(id).child(senderUserID).removeValue()</span><span class="s0">;</span>
+
+                                                <span class="s1">}</span>
+                                            <span class="s1">})</span><span class="s0">;</span>
+                                        <span class="s1">}</span>
+                                    <span class="s1">}</span>
+                                <span class="s1">})</span><span class="s0">;</span>
+
+                            <span class="s1">}</span>
+                        <span class="s1">}</span>
+                    <span class="s1">})</span><span class="s0">;</span>
+                <span class="s1">}</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+
+    <span class="s1">}</span>
+<span class="s1">}</span>
+</pre>
+</body>
+</html>

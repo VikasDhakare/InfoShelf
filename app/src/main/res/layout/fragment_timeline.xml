@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:id="@+id/fragment_timeline_id"
+    android:layout_height="match_parent"
+    tools:context=".bottomfragment.TimelineFragment">
+
+
+<!--    <androidx.appcompat.widget.Toolbar-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:id="@+id/toolbar"-->
+<!--        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
+<!--        android:background="@drawable/grad5"-->
+<!--        app:title="Timeline"-->
+<!--        app:titleMarginStart="40dp"/>-->
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:id="@+id/top_data">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+
+        <ImageView
+            android:id="@+id/filter"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="10dp"
+            android:background="@drawable/chat_background"
+            android:src="@drawable/filter"
+            app:tint="#1BBD56" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/almendra_sc"
+                android:textColor="#555"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:text="Timeline" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/messeger"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="10dp"
+            android:src="@drawable/messenger"
+            android:background="@drawable/chat_background"
+            app:tint="#1BBD56" />
+
+    </LinearLayout>
+
+<!--    <androidx.core.widget.NestedScrollView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_below="@id/top_data"-->
+<!--        >-->
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/top_data">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/storiesRecycler"
+                android:visibility="gone"
+                android:layout_margin="10dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/postRecycler"
+                android:layout_marginBottom="70dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:visibility="gone"
+                android:layout_below="@+id/storiesRecycler"
+                android:layout_marginTop="10dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/allPostRecyclerView"
+                android:layout_marginBottom="70dp"
+                android:layout_marginLeft="10dp"
+                android:visibility="gone"
+                android:layout_marginRight="10dp"
+                android:layout_below="@+id/postRecycler"
+                android:layout_marginTop="10dp"/>
+
+
+        </RelativeLayout>
+
+<!--    </androidx.core.widget.NestedScrollView>-->
+
+</RelativeLayout>
